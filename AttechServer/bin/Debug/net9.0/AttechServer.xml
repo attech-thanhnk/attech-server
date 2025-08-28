@@ -240,6 +240,11 @@
             Tìm kiếm tin tức đã xuất bản (chỉ status = 1) cho client
             </summary>
         </member>
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.INewsService.FindOutstandingForClient(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Lấy danh sách tin tức nổi bật đã xuất bản (isOutstanding = true, status = 1) cho client
+            </summary>
+        </member>
         <member name="M:AttechServer.Applications.UserModules.Abstracts.INewsService.GetPublishedAlbumsForClient(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Lấy danh sách albums đã xuất bản (chỉ status = 1) cho client
@@ -583,7 +588,7 @@
             Tìm kiếm dịch vụ đã xuất bản (chỉ status = 1) cho client
             </summary>
         </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IUserService.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.IUserService.FindAll(AttechServer.Applications.UserModules.Dtos.User.UserPagingRequestDto)">
             <summary>
             L?y danh s�ch ngu?i d�ng
             </summary>
@@ -612,6 +617,16 @@
             <summary>
             Trạng thái
             0 = Nháp, 1 = Xuất bản, 2 = Ẩn
+            </summary>
+        </member>
+        <member name="T:AttechServer.Applications.UserModules.Dtos.User.UserPagingRequestDto">
+            <summary>
+            User pagination request with role filter
+            </summary>
+        </member>
+        <member name="P:AttechServer.Applications.UserModules.Dtos.User.UserPagingRequestDto.RoleId">
+            <summary>
+            Filter by role ID
             </summary>
         </member>
         <member name="M:AttechServer.Applications.UserModules.Implements.AttachmentService.DetectRelationType(System.String)">
@@ -810,6 +825,11 @@
             Search published news by keyword (status = 1 only) for client
             </summary>
         </member>
+        <member name="M:AttechServer.Controllers.ClientNewsController.FindOutstanding(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Get outstanding published news (isOutstanding = true, status = 1) for client
+            </summary>
+        </member>
         <member name="M:AttechServer.Controllers.ClientNotificationCategoryController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Get all notification categories for client with caching
@@ -951,6 +971,36 @@
             Detailed health check with database connectivity
             </summary>
             <returns>Detailed health status</returns>
+        </member>
+        <member name="M:AttechServer.Controllers.LanguageContentCategoryController.FindAll">
+            <summary>
+            Get all language content categories
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.LanguageContentController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Get all language contents with pagination and filtering
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.LanguageContentController.FindById(System.Int32)">
+            <summary>
+            Get language content by ID
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.LanguageContentController.Create(AttechServer.Applications.UserModules.Dtos.LanguageContent.CreateLanguageContentDto)">
+            <summary>
+            Create new language content
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.LanguageContentController.Update(System.Int32,AttechServer.Applications.UserModules.Dtos.LanguageContent.UpdateLanguageContentDto)">
+            <summary>
+            Update language content
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.LanguageContentController.Delete(System.Int32)">
+            <summary>
+            Delete language content
+            </summary>
         </member>
         <member name="M:AttechServer.Controllers.NewsCategoryController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
@@ -1281,7 +1331,7 @@
             User Management Controller
             </summary>
         </member>
-        <member name="M:AttechServer.Controllers.UserController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+        <member name="M:AttechServer.Controllers.UserController.FindAll(AttechServer.Applications.UserModules.Dtos.User.UserPagingRequestDto)">
             <summary>
             Get user list
             </summary>
@@ -1467,6 +1517,18 @@
             <inheritdoc />
         </member>
         <member name="M:AttechServer.Migrations.AddPhoneToContact.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddCommonSetting">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddCommonSetting.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddCommonSetting.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddCommonSetting.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:AttechServer.Services.TempFileCleanupBackgroundService">

@@ -41,7 +41,7 @@ namespace AttechServer.Controllers
         /// </summary>
         [HttpGet]
         [RoleFilter(2)]
-        public async Task<ApiResponse> FindAll([FromQuery] PagingRequestBaseDto input)
+        public async Task<ApiResponse> FindAll([FromQuery] UserPagingRequestDto input)
         {
             try
             {

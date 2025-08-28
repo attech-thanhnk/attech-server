@@ -873,12 +873,12 @@ namespace AttechServer.Applications.UserModules.Implements
                     case "categoryen":
                         return input.IsAscending ? query.OrderBy(x => x.ProductCategory.TitleEn) : query.OrderByDescending(x => x.ProductCategory.TitleEn);
                     default:
-                        return query.OrderByDescending(x => x.IsOutstanding).ThenByDescending(x => x.TimePosted); // default client sort
+                        return query.OrderByDescending(x => x.TimePosted); // default client sort
                 }
             }
             else
             {
-                return query.OrderByDescending(x => x.IsOutstanding).ThenByDescending(x => x.TimePosted); // default client sort
+                return query.OrderByDescending(x => x.TimePosted); // default client sort
             }
         }
 

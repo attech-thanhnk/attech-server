@@ -9,7 +9,7 @@ namespace AttechServer.Applications.UserModules.Abstracts
         /// <summary>
         /// L?y danh s�ch ngu?i d�ng
         /// </summary>
-        Task<PagingResult<UserDto>> FindAll(PagingRequestBaseDto input);
+        Task<PagingResult<UserDto>> FindAll(UserPagingRequestDto input);
 
         /// <summary>
         /// L?y th�ng tin ngu?i d�ng theo ID

@@ -154,6 +154,8 @@ builder.Services.AddScoped<ISystemMonitoringService, SystemMonitoringService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddHttpClient<ITranslationService, FreeTranslationService>();
 builder.Services.AddScoped<IUrlService, UrlService>();
+builder.Services.AddScoped<ILanguageContentService, LanguageContentService>();
+builder.Services.AddScoped<ILanguageContentCategoryService, LanguageContentCategoryService>();
 
 // Add filters
 builder.Services.AddScoped<AttechServer.Shared.Filters.AntiSpamFilter>();

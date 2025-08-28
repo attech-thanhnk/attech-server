@@ -94,6 +94,11 @@ namespace AttechServer.Applications.UserModules.Abstracts
         /// </summary>
         Task<PagingResult<NewsDto>> SearchForClient(PagingRequestBaseDto input);
 
+        /// <summary>
+        /// Lấy danh sách tin tức nổi bật đã xuất bản (isOutstanding = true, status = 1) cho client
+        /// </summary>
+        Task<PagingResult<NewsDto>> FindOutstandingForClient(PagingRequestBaseDto input);
+
         // Client Album methods
         /// <summary>
         /// Lấy danh sách albums đã xuất bản (chỉ status = 1) cho client

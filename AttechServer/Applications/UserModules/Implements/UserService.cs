@@ -25,14 +25,26 @@ namespace AttechServer.Applications.UserModules.Implements
         }
 
 
-        public async Task<PagingResult<UserDto>> FindAll(PagingRequestBaseDto input)
+        public async Task<PagingResult<UserDto>> FindAll(UserPagingRequestDto input)
         {
             _logger.LogInformation($"{nameof(FindAll)}: input = {JsonSerializer.Serialize(input)}");
 
+            // Get current user's role level for permission checking
+            var currentUserLevel = _httpContext.GetCurrentUserLevel();
+            
             var baseQuery = _dbContext.Users.AsNoTracking()
                 .Join(_dbContext.Roles, u => u.RoleId, r => r.Id, (u, r) => new { User = u, Role = r })
                 .Where(ur => !ur.User.Deleted
-                    && (string.IsNullOrEmpty(input.Keyword) || ur.User.Username.Contains(input.Keyword)));
+                    && (string.IsNullOrEmpty(input.Keyword) || ur.User.Username.Contains(input.Keyword))
+                    && (input.RoleId == null || ur.User.RoleId == input.RoleId));
+
+            // Apply role-based filtering based on current user's permission
+            // SuperAdmin (1) can see all users
+            // Admin (2) can only see Editor (3) and themselves
+            if (currentUserLevel == 2) // Admin
+            {
+                baseQuery = baseQuery.Where(ur => ur.User.RoleId >= 2); // Admin and Editor only
+            }
 
             var totalItems = await baseQuery.CountAsync();
 

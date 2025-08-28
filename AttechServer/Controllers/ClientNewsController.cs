@@ -104,5 +104,24 @@ namespace AttechServer.Controllers
                 return OkException(ex);
             }
         }
+
+        /// <summary>
+        /// Get outstanding published news (isOutstanding = true, status = 1) for client
+        /// </summary>
+        [HttpGet("outstanding")]
+        [CacheResponse(CacheProfiles.ShortCache, "client-news-outstanding", varyByQueryString: true)]
+        public async Task<ApiResponse> FindOutstanding([FromQuery] PagingRequestBaseDto input)
+        {
+            try
+            {
+                var result = await _newsService.FindOutstandingForClient(input);
+                return new ApiResponse(ApiStatusCode.Success, result, 200, "Ok");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting outstanding published news for client");
+                return OkException(ex);
+            }
+        }
     }
 }

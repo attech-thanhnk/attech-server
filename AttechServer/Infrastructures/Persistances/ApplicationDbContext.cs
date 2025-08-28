@@ -32,6 +32,8 @@ namespace AttechServer.Infrastructures.Persistances
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<SystemMonitoring> SystemMonitorings { get; set; }
+        public DbSet<LanguageContent> LanguageContents { get; set; }
+        public DbSet<LanguageContentCategory> LanguageContentCategories { get; set; }
         #endregion
 
 
@@ -334,6 +336,28 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.Property(e => e.Category).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.Description).HasMaxLength(200);
                 entity.Property(e => e.Deleted).HasDefaultValue(false);
+            });
+
+            modelBuilder.Entity<LanguageContent>(entity =>
+            {
+                entity.ToTable("LanguageContents");
+                entity.HasIndex(e => e.ContentKey).IsUnique();
+                entity.HasIndex(e => e.Category);
+                entity.HasIndex(e => new { e.Id, e.Deleted }).HasDatabaseName("IX_LanguageContent");
+                entity.Property(e => e.ContentKey).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.ValueVi);
+                entity.Property(e => e.ValueEn);
+                entity.Property(e => e.Category).HasMaxLength(100).HasDefaultValue("common");
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.Deleted).HasDefaultValue(false);
+            });
+
+            modelBuilder.Entity<LanguageContentCategory>(entity =>
+            {
+                entity.ToTable("LanguageContentCategories");
+                entity.HasIndex(e => e.Name).IsUnique();
+                entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.DisplayName).HasMaxLength(200).IsRequired();
             });
             #endregion
 

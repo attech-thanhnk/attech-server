@@ -866,8 +866,7 @@ namespace AttechServer.Applications.UserModules.Implements
             var totalCount = await query.CountAsync();
 
             var notifications = await query
-                .OrderByDescending(n => n.IsOutstanding)
-                .ThenByDescending(n => n.TimePosted)
+                .OrderByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
                 .Take(input.PageSize == -1 ? totalCount : input.PageSize)
                 .Select(n => new NotificationDto

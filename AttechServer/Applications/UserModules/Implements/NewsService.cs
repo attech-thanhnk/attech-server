@@ -1082,8 +1082,7 @@ namespace AttechServer.Applications.UserModules.Implements
             var totalCount = await query.CountAsync();
 
             var news = await query
-                .OrderByDescending(n => n.IsOutstanding)
-                .ThenByDescending(n => n.TimePosted)
+                .OrderByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
                 .Take(input.PageSize == -1 ? totalCount : input.PageSize)
                 .Select(n => new NewsDto
@@ -1256,8 +1255,61 @@ namespace AttechServer.Applications.UserModules.Implements
             var totalCount = await query.CountAsync();
 
             var news = await query
-                .OrderByDescending(n => n.IsOutstanding)
-                .ThenByDescending(n => n.TimePosted)
+                .OrderByDescending(n => n.TimePosted)
+                .Skip(input.GetSkip())
+                .Take(input.PageSize == -1 ? totalCount : input.PageSize)
+                .Select(n => new NewsDto
+                {
+                    Id = n.Id,
+                    SlugVi = n.SlugVi,
+                    SlugEn = n.SlugEn,
+                    TitleVi = n.TitleVi,
+                    TitleEn = n.TitleEn,
+                    DescriptionVi = n.DescriptionVi,
+                    DescriptionEn = n.DescriptionEn,
+                    TimePosted = n.TimePosted,
+                    Status = n.Status,
+                    NewsCategoryId = n.NewsCategoryId,
+                    NewsCategoryTitleVi = n.NewsCategory.TitleVi,
+                    NewsCategoryTitleEn = n.NewsCategory.TitleEn,
+                    NewsCategorySlugVi = n.NewsCategory.SlugVi,
+                    NewsCategorySlugEn = n.NewsCategory.SlugEn,
+                    IsOutstanding = n.IsOutstanding,
+                    ImageUrl = n.ImageUrl,
+                    FeaturedImageId = n.FeaturedImageId
+                })
+                .ToListAsync();
+
+            return new PagingResult<NewsDto>
+            {
+                Items = news,
+                TotalItems = totalCount,
+                PageSize = input.PageSize == -1 ? totalCount : input.PageSize,
+                Page = input.PageNumber
+            };
+        }
+
+        public async Task<PagingResult<NewsDto>> FindOutstandingForClient(PagingRequestBaseDto input)
+        {
+            _logger.LogInformation($"{nameof(FindOutstandingForClient)}: Getting outstanding published news for client");
+            
+            var query = _dbContext.News
+                .Include(n => n.NewsCategory)
+                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsOutstanding == true);
+
+            // Search by keyword if provided
+            if (!string.IsNullOrWhiteSpace(input.Keyword))
+            {
+                query = query.Where(n => n.TitleVi.Contains(input.Keyword) || 
+                                       n.TitleEn.Contains(input.Keyword) ||
+                                       n.DescriptionVi.Contains(input.Keyword) ||
+                                       n.DescriptionEn.Contains(input.Keyword));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var news = await query
+                .OrderByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
                 .Take(input.PageSize == -1 ? totalCount : input.PageSize)
                 .Select(n => new NewsDto
