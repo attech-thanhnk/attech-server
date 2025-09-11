@@ -36,8 +36,13 @@ namespace AttechServer.Domains.Entities.Main
         [StringLength(160)]
         public string DescriptionEn { get; set; } = string.Empty;
 
+        public int? ParentId { get; set; }
+        public int Order { get; set; } = 0;
         public int Status { get; set; }
 
+        // Navigation properties
+        public NotificationCategory? Parent { get; set; }
+        public List<NotificationCategory> Children { get; set; } = new();
         public List<Notification> Notifications { get; set; } = new();
 
         #region audit

@@ -853,8 +853,8 @@ namespace AttechServer.Applications.UserModules.Implements
                     ContentVi = "", // Empty for albums
                     ContentEn = "", // Empty for albums
                     NewsCategoryId = input.NewsCategoryId,
-                    TimePosted = DateTime.Now,
-                    Status = 1, // Active
+                    TimePosted = input.TimePosted,
+                    Status = input.Status,
                     IsOutstanding = false,
                     IsAlbum = true, // Mark as album
                     FeaturedImageId = input.FeaturedImageId, // Set featured image directly
@@ -926,7 +926,7 @@ namespace AttechServer.Applications.UserModules.Implements
             var totalItems = await query.CountAsync();
             
             var albums = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -1068,7 +1068,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false);
+                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false && n.IsDocument == false);
 
             // Search by keyword if provided
             if (!string.IsNullOrWhiteSpace(input.Keyword))
@@ -1079,12 +1079,12 @@ namespace AttechServer.Applications.UserModules.Implements
                                        n.DescriptionEn.Contains(input.Keyword));
             }
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
 
             var news = await query
                 .OrderByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
-                .Take(input.PageSize == -1 ? totalCount : input.PageSize)
+                .Take(input.PageSize == -1 ? totalItems : input.PageSize)
                 .Select(n => new NewsDto
                 {
                     Id = n.Id,
@@ -1110,8 +1110,8 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                PageSize = input.PageSize == -1 ? totalCount : input.PageSize,
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
                 Page = input.PageNumber
             };
         }
@@ -1120,7 +1120,7 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             _logger.LogInformation($"{nameof(FindBySlugForClient)}: slug = {slug}");
             var news = await _dbContext.News
-                .Where(n => (n.SlugVi == slug || n.SlugEn == slug) && !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false)
+                .Where(n => (n.SlugVi == slug || n.SlugEn == slug) && !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false)
                 .Select(n => new DetailNewsDto
                 {
                     Id = n.Id,
@@ -1183,7 +1183,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false &&
+                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false &&
                            (n.NewsCategory.SlugVi == slug || n.NewsCategory.SlugEn == slug));
 
             // Search by keyword if provided
@@ -1195,13 +1195,13 @@ namespace AttechServer.Applications.UserModules.Implements
                                        n.DescriptionEn.Contains(input.Keyword));
             }
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
 
             var news = await query
                 .OrderByDescending(n => n.IsOutstanding)
                 .ThenByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
-                .Take(input.PageSize == -1 ? totalCount : input.PageSize)
+                .Take(input.PageSize == -1 ? totalItems : input.PageSize)
                 .Select(n => new NewsDto
                 {
                     Id = n.Id,
@@ -1227,8 +1227,8 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                PageSize = input.PageSize == -1 ? totalCount : input.PageSize,
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
                 Page = input.PageNumber
             };
         }
@@ -1239,7 +1239,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false);
+                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false);
 
             // Apply search filter
             if (!string.IsNullOrWhiteSpace(input.Keyword))
@@ -1252,12 +1252,12 @@ namespace AttechServer.Applications.UserModules.Implements
                                        n.ContentEn.Contains(input.Keyword));
             }
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
 
             var news = await query
                 .OrderByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
-                .Take(input.PageSize == -1 ? totalCount : input.PageSize)
+                .Take(input.PageSize == -1 ? totalItems : input.PageSize)
                 .Select(n => new NewsDto
                 {
                     Id = n.Id,
@@ -1283,8 +1283,8 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                PageSize = input.PageSize == -1 ? totalCount : input.PageSize,
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
                 Page = input.PageNumber
             };
         }
@@ -1295,7 +1295,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsOutstanding == true);
+                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false && n.IsOutstanding == true);
 
             // Search by keyword if provided
             if (!string.IsNullOrWhiteSpace(input.Keyword))
@@ -1306,12 +1306,12 @@ namespace AttechServer.Applications.UserModules.Implements
                                        n.DescriptionEn.Contains(input.Keyword));
             }
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
 
             var news = await query
                 .OrderByDescending(n => n.TimePosted)
                 .Skip(input.GetSkip())
-                .Take(input.PageSize == -1 ? totalCount : input.PageSize)
+                .Take(input.PageSize == -1 ? totalItems : input.PageSize)
                 .Select(n => new NewsDto
                 {
                     Id = n.Id,
@@ -1337,8 +1337,8 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                PageSize = input.PageSize == -1 ? totalCount : input.PageSize,
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
                 Page = input.PageNumber
             };
         }
@@ -1421,9 +1421,9 @@ namespace AttechServer.Applications.UserModules.Implements
                 .Where(n => n.Status == 1 && !n.Deleted)
                 .OrderByDescending(n => n.TimePosted);
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
             var news = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -1449,9 +1449,9 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                Page = input.Page,
-                PageSize = input.PageSize
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
             };
         }
 
@@ -1531,9 +1531,9 @@ namespace AttechServer.Applications.UserModules.Implements
                 .Where(n => n.NewsCategory.SlugVi == categorySlug || n.NewsCategory.SlugEn == categorySlug)
                 .OrderByDescending(n => n.TimePosted);
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
             var news = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -1559,9 +1559,9 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                Page = input.Page,
-                PageSize = input.PageSize
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
             };
         }
 
@@ -1572,9 +1572,9 @@ namespace AttechServer.Applications.UserModules.Implements
                 .Where(n => n.IsAlbum && n.Status == 1 && n.IsOutstanding && !n.Deleted)
                 .OrderByDescending(n => n.TimePosted);
 
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
             var news = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -1600,9 +1600,9 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                Page = input.Page,
-                PageSize = input.PageSize
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
             };
         }
 
@@ -1630,7 +1630,7 @@ namespace AttechServer.Applications.UserModules.Implements
                     album.ContentEn = input.DescriptionEn ?? "";
                     album.NewsCategoryId = input.NewsCategoryId;
                     album.Status = input.Status;
-                    album.IsOutstanding = input.IsOutstanding;
+                    // IsOutstanding removed from UpdateAlbumDto - keep existing value
                     album.SlugVi = input.SlugVi;
                     album.SlugEn = input.SlugEn;
                     album.ModifiedDate = DateTime.Now;
@@ -1749,12 +1749,12 @@ namespace AttechServer.Applications.UserModules.Implements
                     SlugEn = SlugHelper.GenerateSlug(!string.IsNullOrEmpty(input.TitleEn) ? input.TitleEn : input.TitleVi),
                     TitleVi = input.TitleVi,
                     TitleEn = !string.IsNullOrEmpty(input.TitleEn) ? input.TitleEn : input.TitleVi,
-                    DescriptionVi = TruncateDescription(input.TitleVi),
-                    DescriptionEn = TruncateDescription(!string.IsNullOrEmpty(input.TitleEn) ? input.TitleEn : input.TitleVi),
+                    DescriptionVi = input.DescriptionVi ?? "",
+                    DescriptionEn = input.DescriptionEn ?? "",
                     ContentVi = input.TitleVi,
                     ContentEn = !string.IsNullOrEmpty(input.TitleEn) ? input.TitleEn : input.TitleVi,
-                    TimePosted = DateTime.Now,
-                    Status = 0, // Draft by default
+                    TimePosted = input.TimePosted,
+                    Status = input.Status,
                     NewsCategoryId = input.NewsCategoryId,
                     IsOutstanding = false,
                     IsAlbum = false,
@@ -1767,20 +1767,28 @@ namespace AttechServer.Applications.UserModules.Implements
                 _dbContext.News.Add(newNews);
                 await _dbContext.SaveChangesAsync();
                 
-                // Handle document attachments
-                if (input.AttachmentIds?.Any() == true)
+                // Associate featured image (if provided)
+                if (input.FeaturedImageId.HasValue)
                 {
-                    var attachments = await _dbContext.Attachments
-                        .Where(a => input.AttachmentIds.Contains(a.Id) && a.IsTemporary == true)
-                        .ToListAsync();
-                    
-                    foreach (var attachment in attachments)
-                    {
-                        attachment.ObjectType = ObjectType.Document;
-                        attachment.ObjectId = newNews.Id;
-                        attachment.IsContentImage = false;
-                        attachment.IsTemporary = false;
-                    }
+                    await _attachmentService.AssociateAttachmentsAsync(
+                        new List<int> { input.FeaturedImageId.Value }, 
+                        ObjectType.News, 
+                        newNews.Id, 
+                        isFeaturedImage: true, 
+                        isContentImage: false
+                    );
+                }
+
+                // Associate document attachments (if any)
+                if (input.AttachmentIds != null && input.AttachmentIds.Any())
+                {
+                    await _attachmentService.AssociateAttachmentsAsync(
+                        input.AttachmentIds,
+                        ObjectType.News,
+                        newNews.Id,
+                        isFeaturedImage: false,
+                        isContentImage: false
+                    );
                 }
                 
                 await _dbContext.SaveChangesAsync();
@@ -1825,7 +1833,7 @@ namespace AttechServer.Applications.UserModules.Implements
             var totalItems = await query.CountAsync();
             
             var documents = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -1851,8 +1859,8 @@ namespace AttechServer.Applications.UserModules.Implements
             {
                 Items = documents,
                 TotalItems = totalItems,
-                Page = input.Page,
-                PageSize = input.PageSize
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
             };
         }
 
@@ -1872,7 +1880,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             // Get document attachments
             var documents = await _dbContext.Attachments
-                .Where(a => a.ObjectType == ObjectType.Document && a.ObjectId == id && !a.Deleted)
+                .Where(a => a.ObjectType == ObjectType.News && a.ObjectId == id && !a.Deleted)
                 .Select(a => new AttachmentDto
                 {
                     Id = a.Id,
@@ -1964,46 +1972,42 @@ namespace AttechServer.Applications.UserModules.Implements
                 document.TitleEn = input.TitleEn;
                 document.SlugVi = SlugHelper.GenerateSlug(input.TitleVi);
                 document.SlugEn = SlugHelper.GenerateSlug(input.TitleEn);
-                document.DescriptionVi = TruncateDescription(input.TitleVi);
-                document.DescriptionEn = TruncateDescription(input.TitleEn);
-                document.ContentVi = input.TitleVi;
-                document.ContentEn = input.TitleEn;
+                document.DescriptionVi = input.DescriptionVi ?? "";
+                document.DescriptionEn = input.DescriptionEn ?? "";
                 document.NewsCategoryId = input.NewsCategoryId;
                 document.Status = input.Status;
+                document.TimePosted = input.TimePosted;
                 document.FeaturedImageId = input.FeaturedImageId;
                 document.ModifiedBy = userId;
                 document.ModifiedDate = DateTime.Now;
-                
-                // Handle document attachments
-                if (input.AttachmentIds != null)
+
+                // Soft delete all existing attachments first
+                await _attachmentService.SoftDeleteEntityAttachmentsAsync(ObjectType.News, id);
+
+                // Handle featured image
+                if (input.FeaturedImageId.HasValue)
                 {
-                    // Remove existing document attachments
-                    var existingAttachments = await _dbContext.Attachments
-                        .Where(a => a.ObjectType == ObjectType.Document && a.ObjectId == id)
-                        .ToListAsync();
-                    
-                    foreach (var att in existingAttachments)
-                    {
-                        att.ObjectType = ObjectType.Temp;
-                        att.ObjectId = null;
-                        att.IsTemporary = true;
-                    }
-                    
-                    // Add new attachments
-                    if (input.AttachmentIds.Any())
-                    {
-                        var newAttachments = await _dbContext.Attachments
-                            .Where(a => input.AttachmentIds.Contains(a.Id) && a.IsTemporary == true)
-                            .ToListAsync();
-                        
-                        foreach (var attachment in newAttachments)
-                        {
-                            attachment.ObjectType = ObjectType.Document;
-                            attachment.ObjectId = id;
-                            attachment.IsContentImage = false;
-                            attachment.IsTemporary = false;
-                        }
-                    }
+                    await _attachmentService.AssociateAttachmentsAsync(
+                        new List<int> { input.FeaturedImageId.Value },
+                        ObjectType.News,
+                        id,
+                        isFeaturedImage: true,
+                        isContentImage: false
+                    );
+                    _logger.LogInformation($"Associated featured image {input.FeaturedImageId.Value} for document ID: {id}");
+                }
+
+                // Handle document attachments
+                if (input.AttachmentIds != null && input.AttachmentIds.Any())
+                {
+                    await _attachmentService.AssociateAttachmentsAsync(
+                        input.AttachmentIds,
+                        ObjectType.News,
+                        id,
+                        isFeaturedImage: false,
+                        isContentImage: false
+                    );
+                    _logger.LogInformation($"Associated {input.AttachmentIds.Count} document attachments for document ID: {id}");
                 }
                 
                 await _dbContext.SaveChangesAsync();
@@ -2027,9 +2031,9 @@ namespace AttechServer.Applications.UserModules.Implements
                 .Include(n => n.NewsCategory)
                 .Where(n => n.IsDocument && n.Status == 1 && !n.Deleted)
                 .OrderByDescending(n => n.TimePosted);
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
             var news = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -2053,9 +2057,9 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                Page = input.Page,
-                PageSize = input.PageSize
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
             };
         }
 
@@ -2073,7 +2077,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             // Get document attachments
             var documents = await _dbContext.Attachments
-                .Where(a => a.ObjectType == ObjectType.Document && a.ObjectId == document.Id && !a.Deleted)
+                .Where(a => a.ObjectType == ObjectType.News && a.ObjectId == document.Id && !a.Deleted && !a.IsPrimary)
                 .Select(a => new AttachmentDto
                 {
                     Id = a.Id,
@@ -2148,9 +2152,9 @@ namespace AttechServer.Applications.UserModules.Implements
                 .Include(n => n.NewsCategory)
                 .Where(n => n.NewsCategoryId == category.Id && n.IsDocument && n.Status == 1 && !n.Deleted)
                 .OrderByDescending(n => n.TimePosted);
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
             var news = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -2174,9 +2178,9 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                Page = input.Page,
-                PageSize = input.PageSize
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
             };
         }
 
@@ -2186,9 +2190,9 @@ namespace AttechServer.Applications.UserModules.Implements
                 .Include(n => n.NewsCategory)
                 .Where(n => n.IsDocument && n.Status == 1 && n.IsOutstanding && !n.Deleted)
                 .OrderByDescending(n => n.TimePosted);
-            var totalCount = await query.CountAsync();
+            var totalItems = await query.CountAsync();
             var news = await query
-                .Skip((input.Page - 1) * input.PageSize)
+                .Skip(input.GetSkip())
                 .Take(input.PageSize)
                 .Select(n => new NewsDto
                 {
@@ -2212,9 +2216,111 @@ namespace AttechServer.Applications.UserModules.Implements
             return new PagingResult<NewsDto>
             {
                 Items = news,
-                TotalItems = totalCount,
-                Page = input.Page,
-                PageSize = input.PageSize
+                TotalItems = totalItems,
+                PageSize = input.PageSize == -1 ? totalItems : input.PageSize,
+                Page = input.PageNumber
+            };
+        }
+
+        /// <summary>
+        /// Lấy attachments của document cho client
+        /// </summary>
+        public async Task<List<AttachmentDto>> GetDocumentAttachmentsForClient(string slug)
+        {
+            _logger.LogInformation($"{nameof(GetDocumentAttachmentsForClient)}: slug = {slug}");
+
+            var document = await _dbContext.News
+                .Where(n => (n.SlugVi == slug || n.SlugEn == slug) && !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsDocument == true)
+                .FirstOrDefaultAsync();
+
+            if (document == null)
+            {
+                throw new ArgumentException("Document not found or not published");
+            }
+
+            var attachments = await _dbContext.Attachments
+                .Where(a => a.ObjectType == ObjectType.News && a.ObjectId == document.Id && !a.Deleted && !a.IsPrimary)
+                .Select(a => new AttachmentDto
+                {
+                    Id = a.Id,
+                    FilePath = a.FilePath,
+                    Url = a.Url,
+                    OriginalFileName = a.OriginalFileName,
+                    FileSize = a.FileSize,
+                    ContentType = a.ContentType,
+                    ObjectType = (ObjectType?)a.ObjectType,
+                    ObjectId = a.ObjectId,
+                    IsPrimary = a.IsPrimary,
+                    IsContentImage = a.IsContentImage,
+                    CreatedDate = a.CreatedDate
+                })
+                .ToListAsync();
+
+            return attachments;
+        }
+
+        /// <summary>
+        /// Lấy gallery của document theo slug
+        /// </summary>
+        public async Task<NewsGalleryDto> GetGalleryDocumentBySlug(string slug)
+        {
+            _logger.LogInformation($"{nameof(GetGalleryDocumentBySlug)}: slug = {slug}");
+
+            var document = await _dbContext.News
+                .Include(n => n.NewsCategory)
+                .Where(n => (n.SlugVi == slug || n.SlugEn == slug) && !n.Deleted && n.IsDocument == true)
+                .FirstOrDefaultAsync();
+
+            if (document == null)
+            {
+                throw new ArgumentException("Document not found");
+            }
+
+            var attachments = await _dbContext.Attachments
+                .Where(a => a.ObjectType == ObjectType.News && a.ObjectId == document.Id && !a.Deleted)
+                .Select(a => new AttachmentDto
+                {
+                    Id = a.Id,
+                    FilePath = a.FilePath,
+                    Url = a.Url,
+                    OriginalFileName = a.OriginalFileName,
+                    FileSize = a.FileSize,
+                    ContentType = a.ContentType,
+                    ObjectType = (ObjectType?)a.ObjectType,
+                    ObjectId = a.ObjectId,
+                    IsPrimary = a.IsPrimary,
+                    IsContentImage = a.IsContentImage,
+                    CreatedDate = a.CreatedDate
+                })
+                .ToListAsync();
+
+            // Get featured image
+            var featuredImage = attachments.FirstOrDefault(a => a.IsPrimary);
+            var galleryImages = attachments.Where(a => !a.IsPrimary).ToList();
+
+            return new NewsGalleryDto
+            {
+                Id = document.Id,
+                TitleVi = document.TitleVi,
+                TitleEn = document.TitleEn,
+                SlugVi = document.SlugVi,
+                SlugEn = document.SlugEn,
+                FeaturedImage = featuredImage != null ? new NewsImageDto
+                {
+                    Id = featuredImage.Id,
+                    FilePath = featuredImage.FilePath,
+                    OriginalFileName = featuredImage.OriginalFileName,
+                    FileSize = featuredImage.FileSize,
+                    ContentType = featuredImage.ContentType
+                } : null,
+                GalleryImages = galleryImages.Select(a => new NewsImageDto
+                {
+                    Id = a.Id,
+                    FilePath = a.FilePath,
+                    OriginalFileName = a.OriginalFileName,
+                    FileSize = a.FileSize,
+                    ContentType = a.ContentType
+                }).ToList()
             };
         }
 

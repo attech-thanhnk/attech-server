@@ -23,8 +23,6 @@ namespace AttechServer.Applications.UserModules.Dtos.News
 
         [Range(0, 1, ErrorMessage = "Trạng thái phải là 0 (không hoạt động) hoặc 1 (hoạt động)")]
         public int Status { get; set; } = 1;
-        
-        public bool IsOutstanding { get; set; } = false;
 
         [Required(ErrorMessage = "Slug tiếng Việt là bắt buộc")]
         [StringLength(200, ErrorMessage = "Slug tiếng Việt không được vượt quá 200 ký tự")]
@@ -40,5 +38,8 @@ namespace AttechServer.Applications.UserModules.Dtos.News
         
         // Album gallery images (optional)
         public List<int>? AttachmentIds { get; set; }
+
+        [Required(ErrorMessage = "Thời gian đăng là bắt buộc")]
+        public DateTime TimePosted { get; set; }
     }
 }

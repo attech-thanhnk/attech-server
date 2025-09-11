@@ -10,6 +10,15 @@ namespace AttechServer.Applications.UserModules.Dtos.News
         [Required(ErrorMessage = "Tiêu đề tiếng Anh là bắt buộc")]
         public string TitleEn { get; set; } = string.Empty;
 
+        public string? DescriptionVi { get; set; }
+        public string? DescriptionEn { get; set; }
+
+        [Required(ErrorMessage = "Trạng thái là bắt buộc")]
+        public int Status { get; set; }
+
+        [Required(ErrorMessage = "Thời gian đăng là bắt buộc")]
+        public DateTime TimePosted { get; set; }
+
         [Range(1, int.MaxValue, ErrorMessage = "Danh mục tin tức không hợp lệ")]
         public int NewsCategoryId { get; set; }
 

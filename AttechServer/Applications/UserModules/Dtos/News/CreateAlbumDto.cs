@@ -19,5 +19,11 @@ namespace AttechServer.Applications.UserModules.Dtos.News
 
         // Album gallery images (optional - có thể tạo album chỉ với ảnh đại diện)
         public List<int>? AttachmentIds { get; set; } = new();
+
+        [Required(ErrorMessage = "Trạng thái là bắt buộc")]
+        public int Status { get; set; }
+
+        [Required(ErrorMessage = "Thời gian đăng là bắt buộc")]
+        public DateTime TimePosted { get; set; }
     }
 }

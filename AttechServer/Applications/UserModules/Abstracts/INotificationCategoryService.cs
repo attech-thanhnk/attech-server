@@ -39,5 +39,20 @@ namespace AttechServer.Applications.UserModules.Abstracts
         /// Cập nhật trạng thái danh mục thông báo
         /// </summary>
         Task UpdateStatus(int id, int status);
+
+        /// <summary>
+        /// Kiểm tra danh mục có danh mục con hay không
+        /// </summary>
+        Task<bool> HasChildrenAsync(int categoryId);
+
+        /// <summary>
+        /// Lấy tất cả ID danh mục con và cháu
+        /// </summary>
+        Task<List<int>> GetDescendantIdsAsync(int parentId);
+
+        /// <summary>
+        /// Lấy breadcrumb từ danh mục hiện tại lên root
+        /// </summary>
+        Task<List<NotificationCategoryDto>> GetBreadcrumbAsync(int categoryId);
     }
 } 

@@ -264,7 +264,7 @@ namespace AttechServer.Controllers
         /// Get news gallery by slug
         /// </summary>
         [HttpGet("gallery/{slug}")]
-        [AllowAnonymous]
+        [RoleFilter(2)]
         [CacheResponse(600)] // 10 minutes cache
         public async Task<ApiResponse> GetGalleryBySlug(string slug)
         {
@@ -380,6 +380,26 @@ namespace AttechServer.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating document");
+                return OkException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get document gallery by slug
+        /// </summary>
+        [HttpGet("gallery-document/{slug}")]
+        [RoleFilter(2)]
+        [CacheResponse(600)] // 10 minutes cache
+        public async Task<ApiResponse> GetGalleryDocumentBySlug(string slug)
+        {
+            try
+            {
+                var result = await _newsService.GetGalleryDocumentBySlug(slug);
+                return new ApiResponse(ApiStatusCode.Success, result, 200, "OK");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting document gallery by slug: {Slug}", slug);
                 return OkException(ex);
             }
         }

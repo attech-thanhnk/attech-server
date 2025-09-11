@@ -10,6 +10,15 @@ namespace AttechServer.Applications.UserModules.Dtos.News
         [Required(ErrorMessage = "Tiêu đề tiếng Anh là bắt buộc")]
         public string TitleEn { get; set; } = string.Empty;
 
+        public string? DescriptionVi { get; set; }
+        public string? DescriptionEn { get; set; }
+
+        [Range(0, 1, ErrorMessage = "Trạng thái phải là 0 (không hoạt động) hoặc 1 (hoạt động)")]
+        public int Status { get; set; } = 1;
+
+        [Required(ErrorMessage = "Thời gian đăng là bắt buộc")]
+        public DateTime TimePosted { get; set; }
+
         [Range(1, int.MaxValue, ErrorMessage = "Danh mục tin tức không hợp lệ")]
         public int NewsCategoryId { get; set; }
 
@@ -18,12 +27,5 @@ namespace AttechServer.Applications.UserModules.Dtos.News
 
         // Document files (optional - null means no change, empty list means clear all)
         public List<int>? AttachmentIds { get; set; }
-
-        /// <summary>
-        /// Trạng thái
-        /// 0 = Nháp, 1 = Xuất bản, 2 = Ẩn
-        /// </summary>
-        [Range(0, 2, ErrorMessage = "Trạng thái không hợp lệ")]
-        public int Status { get; set; } = 0;
     }
 }

@@ -89,6 +89,8 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = input.SlugEn,
                         DescriptionVi = input.DescriptionVi,
                         DescriptionEn = input.DescriptionEn,
+                        ParentId = input.ParentId,
+                        Order = input.Order,
                         Status = input.Status,
                         CreatedBy = userId,
                         Deleted = false
@@ -122,7 +124,11 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = newProductCategory.SlugEn,
                         DescriptionVi = newProductCategory.DescriptionVi,
                         DescriptionEn = newProductCategory.DescriptionEn,
-                        Status = newProductCategory.Status
+                        ParentId = newProductCategory.ParentId,
+                        Order = newProductCategory.Order,
+                        Status = newProductCategory.Status,
+                        CreatedDate = newProductCategory.CreatedDate,
+                        ModifiedDate = newProductCategory.ModifiedDate
                     };
                 }
                 catch (Exception ex)
@@ -192,7 +198,11 @@ namespace AttechServer.Applications.UserModules.Implements
                     SlugEn = pc.SlugEn,
                     DescriptionVi = pc.DescriptionVi,
                     DescriptionEn = pc.DescriptionEn,
-                    Status = pc.Status
+                    ParentId = pc.ParentId,
+                    Order = pc.Order,
+                    Status = pc.Status,
+                    CreatedDate = pc.CreatedDate,
+                    ModifiedDate = pc.ModifiedDate
                 })
                 .ToListAsync();
 
@@ -218,7 +228,13 @@ namespace AttechServer.Applications.UserModules.Implements
                     SlugEn = pc.SlugEn,
                     DescriptionVi = pc.DescriptionVi,
                     DescriptionEn = pc.DescriptionEn,
+                    ParentId = pc.ParentId,
+                    Order = pc.Order,
                     Status = pc.Status,
+                    CreatedDate = pc.CreatedDate,
+                    ModifiedDate = pc.ModifiedDate,
+                    CreatedBy = pc.CreatedBy,
+                    ModifiedBy = pc.ModifiedBy,
                     Products = pc.Products
                         .Where(p => !p.Deleted && p.Status == CommonStatus.ACTIVE)
                         .Select(p => new ProductDto
@@ -264,7 +280,13 @@ namespace AttechServer.Applications.UserModules.Implements
                     SlugEn = pc.SlugEn,
                     DescriptionVi = pc.DescriptionVi,
                     DescriptionEn = pc.DescriptionEn,
+                    ParentId = pc.ParentId,
+                    Order = pc.Order,
                     Status = pc.Status,
+                    CreatedDate = pc.CreatedDate,
+                    ModifiedDate = pc.ModifiedDate,
+                    CreatedBy = pc.CreatedBy,
+                    ModifiedBy = pc.ModifiedBy,
                     Products = pc.Products
                         .Where(p => !p.Deleted && p.Status == CommonStatus.ACTIVE)
                         .Select(p => new ProductDto
@@ -354,6 +376,8 @@ namespace AttechServer.Applications.UserModules.Implements
                     productCategory.SlugEn = input.SlugEn;
                     productCategory.DescriptionVi = input.DescriptionVi;
                     productCategory.DescriptionEn = input.DescriptionEn;
+                    productCategory.ParentId = input.ParentId;
+                    productCategory.Order = input.Order;
                     productCategory.Status = input.Status;
                     productCategory.ModifiedBy = userId;
                     // ModifiedDate s? du?c set t? d?ng trong CheckAudit()
@@ -389,6 +413,69 @@ namespace AttechServer.Applications.UserModules.Implements
                 ?? throw new UserFriendlyException(ErrorCode.ProductCategoryNotFound);
             productCategory.Status = status;
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasChildrenAsync(int categoryId)
+        {
+            return await _dbContext.ProductCategories
+                .AnyAsync(c => c.ParentId == categoryId && !c.Deleted);
+        }
+
+        public async Task<List<int>> GetDescendantIdsAsync(int parentId)
+        {
+            var result = new List<int>();
+            var directChildren = await _dbContext.ProductCategories
+                .Where(c => c.ParentId == parentId && !c.Deleted)
+                .Select(c => c.Id)
+                .ToListAsync();
+
+            result.AddRange(directChildren);
+
+            foreach (var childId in directChildren)
+            {
+                var grandChildren = await GetDescendantIdsAsync(childId);
+                result.AddRange(grandChildren);
+            }
+
+            return result;
+        }
+
+        public async Task<List<ProductCategoryDto>> GetBreadcrumbAsync(int categoryId)
+        {
+            var breadcrumb = new List<ProductCategoryDto>();
+            var currentCategory = await _dbContext.ProductCategories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == categoryId && !c.Deleted);
+
+            while (currentCategory != null)
+            {
+                breadcrumb.Insert(0, new ProductCategoryDto
+                {
+                    Id = currentCategory.Id,
+                    TitleVi = currentCategory.TitleVi,
+                    TitleEn = currentCategory.TitleEn,
+                    SlugVi = currentCategory.SlugVi,
+                    SlugEn = currentCategory.SlugEn,
+                    DescriptionVi = currentCategory.DescriptionVi,
+                    DescriptionEn = currentCategory.DescriptionEn,
+                    ParentId = currentCategory.ParentId,
+                    Order = currentCategory.Order,
+                    Status = currentCategory.Status
+                });
+
+                if (currentCategory.ParentId.HasValue)
+                {
+                    currentCategory = await _dbContext.ProductCategories
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(c => c.Id == currentCategory.ParentId && !c.Deleted);
+                }
+                else
+                {
+                    currentCategory = null;
+                }
+            }
+
+            return breadcrumb;
         }
     }
 }

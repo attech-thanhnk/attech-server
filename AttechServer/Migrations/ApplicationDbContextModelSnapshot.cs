@@ -390,6 +390,121 @@ namespace AttechServer.Migrations
                     b.ToTable("LanguageContentCategories", (string)null);
                 });
 
+            modelBuilder.Entity("AttechServer.Domains.Entities.Main.Menu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("DescriptionEn")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("DescriptionVi")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsExternal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MenuType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SourceParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Target")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("_self");
+
+                    b.Property<string>("TitleEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TitleVi")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("UrlEn")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.HasIndex("Order");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("Id", "Deleted")
+                        .HasDatabaseName("IX_Menu");
+
+                    b.HasIndex(new[] { "Id", "Deleted" }, "IX_Menu");
+
+                    b.ToTable("Menus", (string)null);
+                });
+
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.News", b =>
                 {
                     b.Property<int>("Id")
@@ -531,6 +646,12 @@ namespace AttechServer.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SlugEn")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -555,6 +676,10 @@ namespace AttechServer.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Order");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("SlugEn")
                         .IsUnique();
@@ -702,6 +827,12 @@ namespace AttechServer.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SlugEn")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -726,6 +857,10 @@ namespace AttechServer.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Order");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("SlugEn")
                         .IsUnique();
@@ -873,6 +1008,12 @@ namespace AttechServer.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SlugEn")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -897,6 +1038,10 @@ namespace AttechServer.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Order");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("SlugEn")
                         .IsUnique();
@@ -1182,6 +1327,16 @@ namespace AttechServer.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("AttechServer.Domains.Entities.Main.Menu", b =>
+                {
+                    b.HasOne("AttechServer.Domains.Entities.Main.Menu", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.News", b =>
                 {
                     b.HasOne("AttechServer.Domains.Entities.Main.NewsCategory", "NewsCategory")
@@ -1191,6 +1346,16 @@ namespace AttechServer.Migrations
                         .IsRequired();
 
                     b.Navigation("NewsCategory");
+                });
+
+            modelBuilder.Entity("AttechServer.Domains.Entities.Main.NewsCategory", b =>
+                {
+                    b.HasOne("AttechServer.Domains.Entities.Main.NewsCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.Notification", b =>
@@ -1204,6 +1369,16 @@ namespace AttechServer.Migrations
                     b.Navigation("NotificationCategory");
                 });
 
+            modelBuilder.Entity("AttechServer.Domains.Entities.Main.NotificationCategory", b =>
+                {
+                    b.HasOne("AttechServer.Domains.Entities.Main.NotificationCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.Product", b =>
                 {
                     b.HasOne("AttechServer.Domains.Entities.Main.ProductCategory", "ProductCategory")
@@ -1213,6 +1388,16 @@ namespace AttechServer.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductCategory");
+                });
+
+            modelBuilder.Entity("AttechServer.Domains.Entities.Main.ProductCategory", b =>
+                {
+                    b.HasOne("AttechServer.Domains.Entities.Main.ProductCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("AttechServer.Domains.Entities.User", b =>
@@ -1226,18 +1411,29 @@ namespace AttechServer.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("AttechServer.Domains.Entities.Main.Menu", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.NewsCategory", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("News");
                 });
 
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.NotificationCategory", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("AttechServer.Domains.Entities.Main.ProductCategory", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Products");
                 });
 

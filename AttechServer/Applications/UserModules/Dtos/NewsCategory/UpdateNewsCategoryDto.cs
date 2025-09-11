@@ -28,6 +28,8 @@ namespace AttechServer.Applications.UserModules.Dtos.NewsCategory
         [StringLength(160, ErrorMessage = "Mô tả tiếng Anh không được vượt quá 160 ký tự")]
         public string DescriptionEn { get; set; } = string.Empty;
 
+        public int? ParentId { get; set; }
+        public int Order { get; set; } = 0;
         public int Status { get; set; }
     }
 } 

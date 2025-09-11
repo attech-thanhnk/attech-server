@@ -89,36 +89,6 @@
             Get unread contact count (Admin only)
             </summary>
         </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.ICrmIntegrationService.CreateCrmTicketAsync(AttechServer.Applications.UserModules.Dtos.Contact.ContactDto)">
-            <summary>
-            Create a new ticket/lead in CRM system when contact is submitted
-            </summary>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.ICrmIntegrationService.UpdateCrmTicketStatusAsync(System.String,System.Int32)">
-            <summary>
-            Update CRM ticket status when contact status changes
-            </summary>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.ICrmIntegrationService.SyncCustomerToCrmAsync(AttechServer.Applications.UserModules.Dtos.Contact.ContactDto)">
-            <summary>
-            Sync contact information to CRM customer database
-            </summary>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.ICrmIntegrationService.AddCrmTicketNoteAsync(System.String,System.String,System.String)">
-            <summary>
-            Add note to CRM ticket
-            </summary>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.ICrmIntegrationService.IsCrmIntegrationEnabled">
-            <summary>
-            Check if CRM integration is enabled and configured
-            </summary>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.ICrmIntegrationService.TestCrmConnectionAsync">
-            <summary>
-            Test CRM connection
-            </summary>
-        </member>
         <member name="M:AttechServer.Applications.UserModules.Abstracts.INewsCategoryService.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Lấy danh sách tất cả danh mục tin tức với phân trang
@@ -310,6 +280,16 @@
             Lấy documents nổi bật đã xuất bản cho client
             </summary>
         </member>
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.INewsService.GetDocumentAttachmentsForClient(System.String)">
+            <summary>
+            Lấy attachments của document cho client
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.INewsService.GetGalleryDocumentBySlug(System.String)">
+            <summary>
+            Lấy gallery của document theo slug
+            </summary>
+        </member>
         <member name="M:AttechServer.Applications.UserModules.Abstracts.INotificationCategoryService.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Lấy danh sách tất cả danh mục thông báo với phân trang
@@ -343,6 +323,21 @@
         <member name="M:AttechServer.Applications.UserModules.Abstracts.INotificationCategoryService.UpdateStatus(System.Int32,System.Int32)">
             <summary>
             Cập nhật trạng thái danh mục thông báo
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.INotificationCategoryService.HasChildrenAsync(System.Int32)">
+            <summary>
+            Kiểm tra danh mục có danh mục con hay không
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.INotificationCategoryService.GetDescendantIdsAsync(System.Int32)">
+            <summary>
+            Lấy tất cả ID danh mục con và cháu
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.INotificationCategoryService.GetBreadcrumbAsync(System.Int32)">
+            <summary>
+            Lấy breadcrumb từ danh mục hiện tại lên root
             </summary>
         </member>
         <member name="M:AttechServer.Applications.UserModules.Abstracts.INotificationService.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
@@ -401,54 +396,18 @@
             Tìm kiếm thông báo đã xuất bản (chỉ status = 1) cho client
             </summary>
         </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.GetDescendantIdsAsync(System.Int32)">
             <summary>
-            L?y danh s�ch danh m?c b�i vi?t v?i ph�n trang
+            Lấy tất cả ID danh mục con và cháu
             </summary>
-            <param name="input"></param>
+            <param name="parentId"></param>
             <returns></returns>
         </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.FindById(System.Int32)">
+        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.GetBreadcrumbAsync(System.Int32)">
             <summary>
-            L?y th�ng tin chi ti?t danh m?c b�i vi?t
+            Lấy breadcrumb từ danh mục hiện tại lên root
             </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.FindBySlug(System.String)">
-            <summary>
-            L?y th�ng tin chi ti?t danh m?c b�i vi?t theo slug
-            </summary>
-            <param name="slug"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.Create(AttechServer.Applications.UserModules.Dtos.ProductCategory.CreateProductCategoryDto)">
-            <summary>
-            Th�m m?i danh m?c b�i vi?t
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.Update(AttechServer.Applications.UserModules.Dtos.ProductCategory.UpdateProductCategoryDto)">
-            <summary>
-            C?p nh?t danh m?c b�i vi?t
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.Delete(System.Int32)">
-            <summary>
-            X�a nh�m b�i vi?t
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductCategoryService.UpdateStatusProductCategory(System.Int32,System.Int32)">
-            <summary>
-            Kh�a/M? kh�a nh�m b�i vi?t
-            </summary>
-            <param name="id"></param>
-            <param name="status">Tr?ng th�i m?i</param>
+            <param name="categoryId"></param>
             <returns></returns>
         </member>
         <member name="M:AttechServer.Applications.UserModules.Abstracts.IProductService.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
@@ -613,12 +572,6 @@
             Danh sách tài liệu đính kèm
             </summary>
         </member>
-        <member name="P:AttechServer.Applications.UserModules.Dtos.News.UpdateDocumentDto.Status">
-            <summary>
-            Trạng thái
-            0 = Nháp, 1 = Xuất bản, 2 = Ẩn
-            </summary>
-        </member>
         <member name="T:AttechServer.Applications.UserModules.Dtos.User.UserPagingRequestDto">
             <summary>
             User pagination request with role filter
@@ -674,9 +627,34 @@
             Cache key generators for different entity types
             </summary>
         </member>
+        <member name="M:AttechServer.Applications.UserModules.Implements.NewsCategoryService.HasChildrenAsync(System.Int32)">
+            <summary>
+            Check if category has children
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Implements.NewsCategoryService.GetDescendantIdsAsync(System.Int32)">
+            <summary>
+            Get all descendant category IDs (recursive)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Implements.NewsCategoryService.GetBreadcrumbAsync(System.Int32)">
+            <summary>
+            Get breadcrumb path for category
+            </summary>
+        </member>
         <member name="M:AttechServer.Applications.UserModules.Implements.NewsService.DeleteAssociatedFilesAsync(System.Int32)">
             <summary>
             Delete all files associated with a news article
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Implements.NewsService.GetDocumentAttachmentsForClient(System.String)">
+            <summary>
+            Lấy attachments của document cho client
+            </summary>
+        </member>
+        <member name="M:AttechServer.Applications.UserModules.Implements.NewsService.GetGalleryDocumentBySlug(System.String)">
+            <summary>
+            Lấy gallery của document theo slug
             </summary>
         </member>
         <member name="M:AttechServer.Applications.UserModules.Implements.NotificationService.DeleteAssociatedFilesAsync(System.Int32)">
@@ -788,6 +766,31 @@
         <member name="M:AttechServer.Controllers.ClientAlbumController.GetFeaturedAlbums(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Get featured/outstanding albums (published only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.ClientDocumentController.GetPublishedDocuments(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Get all published documents (status = 1) for client
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.ClientDocumentController.GetDocumentBySlug(System.String)">
+            <summary>
+            Get document detail by slug (published only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.ClientDocumentController.GetDocumentsByCategory(System.String,AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Get documents by category (published only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.ClientDocumentController.GetFeaturedDocuments(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Get featured/outstanding documents (published only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.ClientDocumentController.GetDocumentFiles(System.String)">
+            <summary>
+            Get document files by slug
             </summary>
         </member>
         <member name="M:AttechServer.Controllers.ClientNewsCategoryController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
@@ -960,6 +963,13 @@
             Get client IP address from request
             </summary>
         </member>
+        <member name="M:AttechServer.Controllers.GlobalSearchController.GlobalSearch(System.String,System.Int32)">
+            <summary>
+            Global search across Products, News, Services, Notifications
+            </summary>
+            <param name="keyword">Search keyword</param>
+            <param name="limit">Max items per category (default: 5)</param>
+        </member>
         <member name="M:AttechServer.Controllers.HealthController.Get">
             <summary>
             Health check endpoint for monitoring
@@ -1106,6 +1116,11 @@
         <member name="M:AttechServer.Controllers.NewsController.UpdateDocument(System.Int32,AttechServer.Applications.UserModules.Dtos.News.UpdateDocumentDto)">
             <summary>
             Update document (simplified version for documents only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.NewsController.GetGalleryDocumentBySlug(System.String)">
+            <summary>
+            Get document gallery by slug
             </summary>
         </member>
         <member name="M:AttechServer.Controllers.NotificationCategoryController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
@@ -1529,6 +1544,78 @@
             <inheritdoc />
         </member>
         <member name="M:AttechServer.Migrations.AddCommonSetting.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddMenuEntity">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuEntity.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuEntity.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuEntity.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddMenuCategoryFields">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuCategoryFields.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuCategoryFields.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuCategoryFields.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddMenuKeyAndUrlEnFields">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuKeyAndUrlEnFields.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuKeyAndUrlEnFields.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuKeyAndUrlEnFields.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddMenuKeyAndUrlFields">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuKeyAndUrlFields.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuKeyAndUrlFields.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddMenuKeyAndUrlFields.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddCategoryHierarchy">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddCategoryHierarchy.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddCategoryHierarchy.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddCategoryHierarchy.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.UpdateMenuEntityForHierarchy">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.UpdateMenuEntityForHierarchy.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.UpdateMenuEntityForHierarchy.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.UpdateMenuEntityForHierarchy.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:AttechServer.Services.TempFileCleanupBackgroundService">

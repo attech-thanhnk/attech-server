@@ -34,6 +34,7 @@ namespace AttechServer.Infrastructures.Persistances
         public DbSet<SystemMonitoring> SystemMonitorings { get; set; }
         public DbSet<LanguageContent> LanguageContents { get; set; }
         public DbSet<LanguageContentCategory> LanguageContentCategories { get; set; }
+        public DbSet<Menu> Menus { get; set; }
         #endregion
 
 
@@ -202,6 +203,8 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.ToTable("NewsCategories");
                 entity.HasIndex(e => e.SlugVi).IsUnique();
                 entity.HasIndex(e => e.SlugEn).IsUnique();
+                entity.HasIndex(e => e.ParentId);
+                entity.HasIndex(e => e.Order);
                 entity.Property(e => e.TitleVi).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.TitleEn).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.SlugVi).HasMaxLength(100).IsRequired();
@@ -209,6 +212,10 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.Property(e => e.DescriptionVi).HasMaxLength(700);
                 entity.Property(e => e.DescriptionEn).HasMaxLength(700);
                 entity.Property(e => e.Deleted).HasDefaultValue(false);
+                entity.HasOne(n => n.Parent)
+                    .WithMany(n => n.Children)
+                    .HasForeignKey(n => n.ParentId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -239,6 +246,8 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.ToTable("NotificationCategories");
                 entity.HasIndex(e => e.SlugVi).IsUnique();
                 entity.HasIndex(e => e.SlugEn).IsUnique();
+                entity.HasIndex(e => e.ParentId);
+                entity.HasIndex(e => e.Order);
                 entity.Property(e => e.TitleVi).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.TitleEn).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.SlugVi).HasMaxLength(100).IsRequired();
@@ -246,6 +255,10 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.Property(e => e.DescriptionVi).HasMaxLength(700);
                 entity.Property(e => e.DescriptionEn).HasMaxLength(700);
                 entity.Property(e => e.Deleted).HasDefaultValue(false);
+                entity.HasOne(n => n.Parent)
+                    .WithMany(n => n.Children)
+                    .HasForeignKey(n => n.ParentId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -276,6 +289,8 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.ToTable("ProductCategories");
                 entity.HasIndex(e => e.SlugVi).IsUnique();
                 entity.HasIndex(e => e.SlugEn).IsUnique();
+                entity.HasIndex(e => e.ParentId);
+                entity.HasIndex(e => e.Order);
                 entity.Property(e => e.TitleVi).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.TitleEn).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.SlugVi).HasMaxLength(100).IsRequired();
@@ -283,6 +298,10 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.Property(e => e.DescriptionVi).HasMaxLength(700);
                 entity.Property(e => e.DescriptionEn).HasMaxLength(700);
                 entity.Property(e => e.Deleted).HasDefaultValue(false);
+                entity.HasOne(p => p.Parent)
+                    .WithMany(p => p.Children)
+                    .HasForeignKey(p => p.ParentId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Service>(entity =>
@@ -358,6 +377,30 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.HasIndex(e => e.Name).IsUnique();
                 entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.DisplayName).HasMaxLength(200).IsRequired();
+            });
+
+            modelBuilder.Entity<Menu>(entity =>
+            {
+                entity.ToTable("Menus");
+                entity.HasIndex(e => e.Key).IsUnique();
+                entity.HasIndex(e => e.ParentId);
+                entity.HasIndex(e => e.Order);
+                entity.HasIndex(e => new { e.Id, e.Deleted }).HasDatabaseName("IX_Menu");
+                entity.Property(e => e.TitleVi).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.TitleEn).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Key).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Url).HasMaxLength(500);
+                entity.Property(e => e.UrlEn).HasMaxLength(500);
+                entity.Property(e => e.Target).HasMaxLength(50).HasDefaultValue("_self");
+                entity.Property(e => e.DescriptionVi).HasMaxLength(500);
+                entity.Property(e => e.DescriptionEn).HasMaxLength(500);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsExternal).HasDefaultValue(false);
+                entity.Property(e => e.Deleted).HasDefaultValue(false);
+                entity.HasOne(m => m.Parent)
+                    .WithMany(m => m.Children)
+                    .HasForeignKey(m => m.ParentId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
 

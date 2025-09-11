@@ -156,6 +156,7 @@ builder.Services.AddHttpClient<ITranslationService, FreeTranslationService>();
 builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddScoped<ILanguageContentService, LanguageContentService>();
 builder.Services.AddScoped<ILanguageContentCategoryService, LanguageContentCategoryService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
 
 // Add filters
 builder.Services.AddScoped<AttechServer.Shared.Filters.AntiSpamFilter>();
@@ -187,6 +188,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         await DbInitializer.InitializeAsync(context);
+        
     }
     catch (Exception ex)
     {

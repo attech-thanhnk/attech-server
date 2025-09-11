@@ -165,5 +165,15 @@ namespace AttechServer.Applications.UserModules.Abstracts
         /// Lấy documents nổi bật đã xuất bản cho client
         /// </summary>
         Task<PagingResult<NewsDto>> GetFeaturedDocumentsForClient(PagingRequestBaseDto input);
+
+        /// <summary>
+        /// Lấy attachments của document cho client
+        /// </summary>
+        Task<List<AttachmentDto>> GetDocumentAttachmentsForClient(string slug);
+
+        /// <summary>
+        /// Lấy gallery của document theo slug
+        /// </summary>
+        Task<NewsGalleryDto> GetGalleryDocumentBySlug(string slug);
     }
 }

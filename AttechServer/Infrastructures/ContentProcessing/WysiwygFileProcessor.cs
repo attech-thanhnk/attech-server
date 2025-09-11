@@ -15,19 +15,22 @@ namespace AttechServer.Infrastructures.ContentProcessing
         private readonly ILogger<WysiwygFileProcessor> _logger;
         private readonly IWebHostEnvironment _env;
         private readonly IAttachmentService _attachmentService;
+        private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
 
         public WysiwygFileProcessor(
             ApplicationDbContext dbContext,
             IHttpContextAccessor httpContextAccessor,
             ILogger<WysiwygFileProcessor> logger,
             IWebHostEnvironment env,
-            IAttachmentService attachmentService)
+            IAttachmentService attachmentService,
+            Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _env = env ?? throw new ArgumentNullException(nameof(env));
             _attachmentService = attachmentService ?? throw new ArgumentNullException(nameof(attachmentService));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public async Task<(string ProcessedContent, List<FileEntry> FileEntries)> ProcessContentAsync(string content, ObjectType objectType, int objectId)
@@ -114,14 +117,19 @@ namespace AttechServer.Infrastructures.ContentProcessing
                 var subFolder = relativePath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "files";
                 fileEntries.Add(new FileEntry { SubFolder = subFolder, FilePath = relativePath });
 
-                // Convert to static public URL - preserve domain if original URL had domain
-                var originalUrl = element.GetAttribute("src") ?? element.GetAttribute("href");
+                // Check storage mode configuration - default to relative
+                var storageMode = _configuration["AppSettings:StorageMode"] ?? "relative";
                 var staticUrl = $"/uploads/{relativePath}";
                 
-                if (!string.IsNullOrEmpty(originalUrl) && (originalUrl.StartsWith("http://") || originalUrl.StartsWith("https://")))
+                // Only add full domain if StorageMode is set to "absolute"
+                if (storageMode.Equals("absolute", StringComparison.OrdinalIgnoreCase))
                 {
-                    var uri = new Uri(originalUrl);
-                    staticUrl = $"{uri.Scheme}://{uri.Host}:{uri.Port}/uploads/{relativePath}";
+                    var originalUrl = element.GetAttribute("src") ?? element.GetAttribute("href");
+                    if (!string.IsNullOrEmpty(originalUrl) && (originalUrl.StartsWith("http://") || originalUrl.StartsWith("https://")))
+                    {
+                        var uri = new Uri(originalUrl);
+                        staticUrl = $"{uri.Scheme}://{uri.Host}:{uri.Port}/uploads/{relativePath}";
+                    }
                 }
                 
                 if (element.TagName == "IMG" || element.TagName == "VIDEO")

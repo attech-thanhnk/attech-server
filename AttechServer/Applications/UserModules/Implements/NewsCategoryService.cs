@@ -88,6 +88,8 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = input.SlugEn,
                         DescriptionVi = input.DescriptionVi,
                         DescriptionEn = input.DescriptionEn,
+                        ParentId = input.ParentId,
+                        Order = input.Order,
                         Status = input.Status,
                         CreatedBy = userId,
                         Deleted = false
@@ -119,7 +121,11 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = newNewsCategory.SlugEn,
                         DescriptionVi = newNewsCategory.DescriptionVi,
                         DescriptionEn = newNewsCategory.DescriptionEn,
-                        Status = newNewsCategory.Status
+                        ParentId = newNewsCategory.ParentId,
+                        Order = newNewsCategory.Order,
+                        Status = newNewsCategory.Status,
+                        CreatedDate = newNewsCategory.CreatedDate,
+                        ModifiedDate = newNewsCategory.ModifiedDate
                     };
                 }
                 catch (Exception ex)
@@ -220,7 +226,11 @@ namespace AttechServer.Applications.UserModules.Implements
                     SlugEn = c.SlugEn,
                     DescriptionVi = c.DescriptionVi,
                     DescriptionEn = c.DescriptionEn,
-                    Status = c.Status
+                    ParentId = c.ParentId,
+                    Order = c.Order,
+                    Status = c.Status,
+                    CreatedDate = c.CreatedDate,
+                    ModifiedDate = c.ModifiedDate
                 })
                 .ToListAsync();
 
@@ -253,10 +263,14 @@ namespace AttechServer.Applications.UserModules.Implements
                 SlugEn = category.SlugEn,
                 DescriptionVi = category.DescriptionVi,
                 DescriptionEn = category.DescriptionEn,
+                ParentId = category.ParentId,
+                Order = category.Order,
                 Status = category.Status,
                 NewsCount = category.News.Count,
                 CreatedDate = category.CreatedDate,
-                ModifiedDate = category.ModifiedDate
+                ModifiedDate = category.ModifiedDate,
+                CreatedBy = category.CreatedBy,
+                ModifiedBy = category.ModifiedBy
             };
         }
 
@@ -282,10 +296,14 @@ namespace AttechServer.Applications.UserModules.Implements
                 SlugEn = category.SlugEn,
                 DescriptionVi = category.DescriptionVi,
                 DescriptionEn = category.DescriptionEn,
+                ParentId = category.ParentId,
+                Order = category.Order,
                 Status = category.Status,
                 NewsCount = category.News.Count,
                 CreatedDate = category.CreatedDate,
-                ModifiedDate = category.ModifiedDate
+                ModifiedDate = category.ModifiedDate,
+                CreatedBy = category.CreatedBy,
+                ModifiedBy = category.ModifiedBy
             };
         }
 
@@ -355,6 +373,8 @@ namespace AttechServer.Applications.UserModules.Implements
                     category.SlugEn = input.SlugEn;
                     category.DescriptionVi = input.DescriptionVi;
                     category.DescriptionEn = input.DescriptionEn;
+                    category.ParentId = input.ParentId;
+                    category.Order = input.Order;
                     category.Status = input.Status;
                     category.ModifiedBy = userId;
                     category.ModifiedDate = DateTime.Now;
@@ -384,7 +404,11 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = category.SlugEn,
                         DescriptionVi = category.DescriptionVi,
                         DescriptionEn = category.DescriptionEn,
-                        Status = category.Status
+                        ParentId = category.ParentId,
+                        Order = category.Order,
+                        Status = category.Status,
+                        CreatedDate = category.CreatedDate,
+                        ModifiedDate = category.ModifiedDate
                     };
                 }
                 catch (Exception ex)
@@ -442,5 +466,87 @@ namespace AttechServer.Applications.UserModules.Implements
                 }
             }
         }
+
+        #region Hierarchy Methods
+
+        /// <summary>
+        /// Check if category has children
+        /// </summary>
+        public async Task<bool> HasChildrenAsync(int categoryId)
+        {
+            return await _dbContext.NewsCategories
+                .AnyAsync(c => c.ParentId == categoryId && !c.Deleted);
+        }
+
+        /// <summary>
+        /// Get all descendant category IDs (recursive)
+        /// </summary>
+        public async Task<List<int>> GetDescendantIdsAsync(int parentId)
+        {
+            var result = new List<int>();
+            var directChildren = await _dbContext.NewsCategories
+                .Where(c => c.ParentId == parentId && !c.Deleted)
+                .Select(c => c.Id)
+                .ToListAsync();
+
+            result.AddRange(directChildren);
+
+            foreach (var childId in directChildren)
+            {
+                var grandChildren = await GetDescendantIdsAsync(childId);
+                result.AddRange(grandChildren);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get breadcrumb path for category
+        /// </summary>
+        public async Task<List<NewsCategoryDto>> GetBreadcrumbAsync(int categoryId)
+        {
+            var result = new List<NewsCategoryDto>();
+            var category = await _dbContext.NewsCategories
+                .Where(c => c.Id == categoryId && !c.Deleted)
+                .Select(c => new NewsCategoryDto
+                {
+                    Id = c.Id,
+                    TitleVi = c.TitleVi,
+                    TitleEn = c.TitleEn,
+                    SlugVi = c.SlugVi,
+                    SlugEn = c.SlugEn
+                })
+                .FirstOrDefaultAsync();
+
+            if (category == null) return result;
+
+            // Get parent chain
+            int? currentId = categoryId;
+            while (currentId != null)
+            {
+                var current = await _dbContext.NewsCategories
+                    .Where(c => c.Id == currentId && !c.Deleted)
+                    .Select(c => new { c.Id, c.TitleVi, c.TitleEn, c.SlugVi, c.SlugEn, c.ParentId })
+                    .FirstOrDefaultAsync();
+
+                if (current != null)
+                {
+                    result.Insert(0, new NewsCategoryDto
+                    {
+                        Id = current.Id,
+                        TitleVi = current.TitleVi,
+                        TitleEn = current.TitleEn,
+                        SlugVi = current.SlugVi,
+                        SlugEn = current.SlugEn
+                    });
+                    currentId = current.ParentId;
+                }
+                else break;
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 } 

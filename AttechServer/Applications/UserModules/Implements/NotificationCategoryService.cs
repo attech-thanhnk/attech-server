@@ -88,6 +88,8 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = input.SlugEn,
                         DescriptionVi = input.DescriptionVi,
                         DescriptionEn = input.DescriptionEn,
+                        ParentId = input.ParentId,
+                        Order = input.Order,
                         Status = input.Status,
                         CreatedBy = userId,
                         Deleted = false
@@ -119,7 +121,11 @@ namespace AttechServer.Applications.UserModules.Implements
                         SlugEn = newNotificationCategory.SlugEn,
                         DescriptionVi = newNotificationCategory.DescriptionVi,
                         DescriptionEn = newNotificationCategory.DescriptionEn,
-                        Status = newNotificationCategory.Status
+                        ParentId = newNotificationCategory.ParentId,
+                        Order = newNotificationCategory.Order,
+                        Status = newNotificationCategory.Status,
+                        CreatedDate = newNotificationCategory.CreatedDate,
+                        ModifiedDate = newNotificationCategory.ModifiedDate
                     };
                 }
                 catch (Exception ex)
@@ -220,7 +226,11 @@ namespace AttechServer.Applications.UserModules.Implements
                     SlugEn = c.SlugEn,
                     DescriptionVi = c.DescriptionVi,
                     DescriptionEn = c.DescriptionEn,
-                    Status = c.Status
+                    ParentId = c.ParentId,
+                    Order = c.Order,
+                    Status = c.Status,
+                    CreatedDate = c.CreatedDate,
+                    ModifiedDate = c.ModifiedDate
                 })
                 .ToListAsync();
 
@@ -253,10 +263,14 @@ namespace AttechServer.Applications.UserModules.Implements
                 SlugEn = category.SlugEn,
                 DescriptionVi = category.DescriptionVi,
                 DescriptionEn = category.DescriptionEn,
+                ParentId = category.ParentId,
+                Order = category.Order,
                 Status = category.Status,
                 NotificationCount = category.Notifications.Count,
                 CreatedDate = category.CreatedDate,
-                ModifiedDate = category.ModifiedDate
+                ModifiedDate = category.ModifiedDate,
+                CreatedBy = category.CreatedBy,
+                ModifiedBy = category.ModifiedBy
             };
         }
 
@@ -282,10 +296,14 @@ namespace AttechServer.Applications.UserModules.Implements
                 SlugEn = category.SlugEn,
                 DescriptionVi = category.DescriptionVi,
                 DescriptionEn = category.DescriptionEn,
+                ParentId = category.ParentId,
+                Order = category.Order,
                 Status = category.Status,
                 NotificationCount = category.Notifications.Count,
                 CreatedDate = category.CreatedDate,
-                ModifiedDate = category.ModifiedDate
+                ModifiedDate = category.ModifiedDate,
+                CreatedBy = category.CreatedBy,
+                ModifiedBy = category.ModifiedBy
             };
         }
 
@@ -355,6 +373,8 @@ namespace AttechServer.Applications.UserModules.Implements
                     category.SlugEn = input.SlugEn;
                     category.DescriptionVi = input.DescriptionVi;
                     category.DescriptionEn = input.DescriptionEn;
+                    category.ParentId = input.ParentId;
+                    category.Order = input.Order;
                     category.Status = input.Status;
                     category.ModifiedBy = userId;
                     category.ModifiedDate = DateTime.Now;
@@ -441,6 +461,80 @@ namespace AttechServer.Applications.UserModules.Implements
                     throw;
                 }
             }
+        }
+
+        public async Task<bool> HasChildrenAsync(int categoryId)
+        {
+            return await _dbContext.NotificationCategories
+                .AnyAsync(c => c.ParentId == categoryId && !c.Deleted);
+        }
+
+        public async Task<List<int>> GetDescendantIdsAsync(int parentId)
+        {
+            // Load tất cả categories một lần để tránh N+1 queries
+            var allCategories = await _dbContext.NotificationCategories
+                .Where(c => !c.Deleted)
+                .Select(c => new { c.Id, c.ParentId })
+                .ToListAsync();
+
+            var result = new List<int>();
+            var toProcess = new Queue<int>();
+            toProcess.Enqueue(parentId);
+
+            while (toProcess.Count > 0)
+            {
+                var currentId = toProcess.Dequeue();
+                var children = allCategories
+                    .Where(c => c.ParentId == currentId)
+                    .Select(c => c.Id)
+                    .ToList();
+
+                foreach (var childId in children)
+                {
+                    result.Add(childId);
+                    toProcess.Enqueue(childId);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<List<NotificationCategoryDto>> GetBreadcrumbAsync(int categoryId)
+        {
+            var breadcrumb = new List<NotificationCategoryDto>();
+            var currentCategory = await _dbContext.NotificationCategories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == categoryId && !c.Deleted);
+
+            while (currentCategory != null)
+            {
+                breadcrumb.Insert(0, new NotificationCategoryDto
+                {
+                    Id = currentCategory.Id,
+                    TitleVi = currentCategory.TitleVi,
+                    TitleEn = currentCategory.TitleEn,
+                    SlugVi = currentCategory.SlugVi,
+                    SlugEn = currentCategory.SlugEn,
+                    DescriptionVi = currentCategory.DescriptionVi,
+                    DescriptionEn = currentCategory.DescriptionEn,
+                    ParentId = currentCategory.ParentId,
+                    Order = currentCategory.Order,
+                    Status = currentCategory.Status
+                });
+
+                if (currentCategory.ParentId.HasValue)
+                {
+                    currentCategory = await _dbContext.NotificationCategories
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(c => c.Id == currentCategory.ParentId && !c.Deleted);
+                }
+                else
+                {
+                    currentCategory = null;
+                }
+            }
+
+            return breadcrumb;
         }
     }
 } 

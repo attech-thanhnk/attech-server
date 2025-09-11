@@ -966,10 +966,35 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             _logger.LogInformation($"{nameof(FindAllByCategorySlugForClient)}: slug = {slug}");
             
+            // 1. Find category by slug
+            var category = await _dbContext.NotificationCategories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => (c.SlugVi == slug || c.SlugEn == slug) && !c.Deleted);
+
+            if (category == null)
+                throw new UserFriendlyException(ErrorCode.NotificationCategoryNotFound);
+
+            // 2. Check if category has children
+            var hasChildren = await _dbContext.NotificationCategories
+                .AnyAsync(c => c.ParentId == category.Id && !c.Deleted);
+
+            List<int> categoryIds;
+            if (hasChildren)
+            {
+                // Get all descendant category IDs + current category ID
+                categoryIds = await GetAllCategoryIds(category.Id);
+            }
+            else
+            {
+                // Only current category
+                categoryIds = new List<int> { category.Id };
+            }
+
+            // 3. Build query with hierarchy support
             var query = _dbContext.Notifications
                 .Include(n => n.NotificationCategory)
                 .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE &&
-                           (n.NotificationCategory.SlugVi == slug || n.NotificationCategory.SlugEn == slug));
+                           categoryIds.Contains(n.NotificationCategoryId));
 
             // Search by keyword if provided
             if (!string.IsNullOrWhiteSpace(input.Keyword))
@@ -1073,6 +1098,36 @@ namespace AttechServer.Applications.UserModules.Implements
                 PageSize = input.PageSize == -1 ? totalCount : input.PageSize,
                 Page = input.PageNumber
             };
+        }
+
+        private async Task<List<int>> GetAllCategoryIds(int parentId)
+        {
+            // Load tất cả categories một lần để tránh N+1 queries
+            var allCategories = await _dbContext.NotificationCategories
+                .Where(c => !c.Deleted)
+                .Select(c => new { c.Id, c.ParentId })
+                .ToListAsync();
+
+            var result = new List<int> { parentId }; // Include parent
+            var toProcess = new Queue<int>();
+            toProcess.Enqueue(parentId);
+
+            while (toProcess.Count > 0)
+            {
+                var currentId = toProcess.Dequeue();
+                var children = allCategories
+                    .Where(c => c.ParentId == currentId)
+                    .Select(c => c.Id)
+                    .ToList();
+
+                foreach (var childId in children)
+                {
+                    result.Add(childId);
+                    toProcess.Enqueue(childId);
+                }
+            }
+
+            return result;
         }
     }
 }
