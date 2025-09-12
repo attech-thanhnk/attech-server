@@ -157,6 +157,7 @@ builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddScoped<ILanguageContentService, LanguageContentService>();
 builder.Services.AddScoped<ILanguageContentCategoryService, LanguageContentCategoryService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IInternalDocumentService, InternalDocumentService>();
 
 // Add filters
 builder.Services.AddScoped<AttechServer.Shared.Filters.AntiSpamFilter>();

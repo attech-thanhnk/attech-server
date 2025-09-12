@@ -35,6 +35,7 @@ namespace AttechServer.Infrastructures.Persistances
         public DbSet<LanguageContent> LanguageContents { get; set; }
         public DbSet<LanguageContentCategory> LanguageContentCategories { get; set; }
         public DbSet<Menu> Menus { get; set; }
+        public DbSet<InternalDocument> InternalDocuments { get; set; }
         #endregion
 
 
@@ -401,6 +402,24 @@ namespace AttechServer.Infrastructures.Persistances
                     .WithMany(m => m.Children)
                     .HasForeignKey(m => m.ParentId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<InternalDocument>(entity =>
+            {
+                entity.ToTable("InternalDocuments");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Category);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => new { e.Id, e.Deleted }).HasDatabaseName("IX_InternalDocument");
+                entity.Property(e => e.Title).HasMaxLength(500).IsRequired();
+                entity.Property(e => e.Description).HasMaxLength(2000);
+                entity.Property(e => e.Category).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Status).HasDefaultValue(1);
+                entity.Property(e => e.Deleted).HasDefaultValue(false);
+                entity.HasOne(d => d.Attachment)
+                    .WithMany()
+                    .HasForeignKey(d => d.AttachmentId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
             #endregion
 
