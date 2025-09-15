@@ -213,6 +213,8 @@ namespace AttechServer.Applications.UserModules.Implements
                 _logger.LogInformation("Signing credentials created successfully");
 
                 var token = new JwtSecurityToken(
+                    issuer: _configuration.GetSection("JWT")["Issuer"] ?? "AttechServer",
+                    audience: _configuration.GetSection("JWT")["Audience"] ?? "AttechServer",
                     expires: DateTime.Now.AddHours(1),
                     claims: claims,
                     signingCredentials: credentials

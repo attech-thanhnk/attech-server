@@ -127,7 +127,7 @@ namespace AttechServer.Controllers
         }
 
         /// <summary>
-        /// Lấy tất cả settings đã được định nghĩa
+        /// Lấy tất cả settings đã được định nghĩa (cần đăng nhập)
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAllSettings()
@@ -138,15 +138,15 @@ namespace AttechServer.Controllers
 
                 // Lấy tất cả enum values
                 var settingTypes = Enum.GetValues<SettingType>().Where(s => s != SettingType.Custom);
-                
+
                 foreach (var settingType in settingTypes)
                 {
                     var settingKey = settingType.ToString();
                     var objectId = (int)settingType;
-                    
+
                     var attachments = await _attachmentService.GetByEntityAsync(ObjectType.Setting, objectId);
                     var attachment = attachments.FirstOrDefault(a => a.IsPrimary);
-                    
+
                     if (attachment != null)
                     {
                         settings[settingKey] = new
@@ -163,12 +163,83 @@ namespace AttechServer.Controllers
                         settings[settingKey] = null;
                     }
                 }
-                
+
                 return Ok(settings);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting all settings");
+                return StatusCode(500, "Có lỗi xảy ra khi lấy settings");
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả settings public (không cần đăng nhập) - cho Frontend
+        /// </summary>
+        [HttpGet("public")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPublicSettings()
+        {
+            try
+            {
+                var settings = new Dictionary<string, object?>();
+
+                // Chỉ lấy những setting public cần thiết cho Frontend
+                var publicSettingTypes = new[]
+                {
+                    // Main Banners (Carousel)
+                    SettingType.Banner1, SettingType.Banner2, SettingType.Banner3,
+
+                    // Logo
+                    SettingType.Logo, SettingType.Favicon,
+
+                    // Feature Backgrounds
+                    SettingType.HomeFeatCns, SettingType.HomeFeatBhc, SettingType.HomeFeatCnhk,
+
+                    // Fact Event Image
+                    SettingType.HomeFactEvent,
+
+                    // About CNS/ATM Gallery
+                    SettingType.AboutCns1, SettingType.AboutCns2, SettingType.AboutCns3,
+                    SettingType.AboutCns4, SettingType.AboutCns5, SettingType.AboutCns6,
+
+                    // About BHC Gallery
+                    SettingType.AboutBhc1, SettingType.AboutBhc2, SettingType.AboutBhc3,
+                    SettingType.AboutBhc4, SettingType.AboutBhc5,
+
+                    // About CNHK Gallery
+                    SettingType.AboutCnhk1, SettingType.AboutCnhk2, SettingType.AboutCnhk3,
+                    SettingType.AboutCnhk4, SettingType.AboutCnhk5, SettingType.AboutCnhk6,
+                    SettingType.AboutCnhk7, SettingType.AboutCnhk8
+                };
+
+                foreach (var settingType in publicSettingTypes)
+                {
+                    var settingKey = settingType.ToString();
+                    var objectId = (int)settingType;
+
+                    var attachments = await _attachmentService.GetByEntityAsync(ObjectType.Setting, objectId);
+                    var attachment = attachments.FirstOrDefault(a => a.IsPrimary);
+
+                    if (attachment != null)
+                    {
+                        settings[settingKey] = new
+                        {
+                            url = attachment.Url,
+                            description = settingType.GetDescription()
+                        };
+                    }
+                    else
+                    {
+                        settings[settingKey] = null;
+                    }
+                }
+
+                return Ok(settings);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting public settings");
                 return StatusCode(500, "Có lỗi xảy ra khi lấy settings");
             }
         }

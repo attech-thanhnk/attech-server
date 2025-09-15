@@ -2045,6 +2045,95 @@
         }
       }
     },
+    "/api/language-contents/client/find-all": {
+      "get": {
+        "tags": [
+          "ClientLanguageContent"
+        ],
+        "summary": "Get all language contents with long cache for client",
+        "parameters": [
+          {
+            "name": "permission",
+            "in": "query",
+            "description": "Used for permissions in an API that is called in many places",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/language-contents/client/{id}": {
+      "get": {
+        "tags": [
+          "ClientLanguageContent"
+        ],
+        "summary": "Get language content by ID with long cache for client",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "permission",
+            "in": "query",
+            "description": "Used for permissions in an API that is called in many places",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/news/client/find-all": {
       "get": {
         "tags": [
@@ -12545,7 +12634,30 @@
         "tags": [
           "Setting"
         ],
-        "summary": "Lấy tất cả settings đã được định nghĩa",
+        "summary": "Lấy tất cả settings đã được định nghĩa (cần đăng nhập)",
+        "parameters": [
+          {
+            "name": "permission",
+            "in": "query",
+            "description": "Used for permissions in an API that is called in many places",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Setting/public": {
+      "get": {
+        "tags": [
+          "Setting"
+        ],
+        "summary": "Lấy tất cả settings public (không cần đăng nhập) - cho Frontend",
         "parameters": [
           {
             "name": "permission",

@@ -39,15 +39,45 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
-    x.RequireHttpsMetadata = false;
+    // Enable HTTPS metadata validation in production
+    x.RequireHttpsMetadata = builder.Environment.IsProduction();
     x.SaveToken = true;
     x.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT")["Key"]!)),
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ClockSkew = TimeSpan.Zero
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration.GetSection("JWT")["Audience"] ?? "AttechServer",
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration.GetSection("JWT")["Issuer"] ?? "AttechServer",
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(5), // Allow 5 minutes clock skew
+        RequireExpirationTime = true
+    };
+
+    // Security events
+    x.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning("JWT Authentication failed: {Message}", context.Exception?.Message);
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("JWT Token validated for user: {UserId}",
+                context.Principal?.FindFirst("user_id")?.Value);
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning("JWT Challenge: {Error}, {ErrorDescription}",
+                context.Error, context.ErrorDescription);
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -60,27 +90,47 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
-// setting cors
+// Configure CORS with security-focused settings
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
-        policy =>
-        {
-            policy.WithOrigins(
-                    "http://localhost:3000",
-                    "https://localhost:3000",
-                    "http://192.168.22.159:3000",
-                    "https://192.168.22.159:3000",
-                    "http://192.168.22.159:7276",
-                    "https://192.168.22.159:7276",
-                    "http://192.168.22.159:5232",
-                    "https://attech.space",
-                    "https://www.attech.space"
-                )
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
+    // Development CORS policy
+    options.AddPolicy("Development", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:3000",
+                "https://localhost:3000",
+                "http://192.168.22.159:3000",
+                "https://192.168.22.159:3000",
+                "http://192.168.22.159:7276",
+                "https://192.168.22.159:7276",
+                "http://192.168.22.159:5232"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+    });
+
+    // Production CORS policy - more restrictive
+    options.AddPolicy("Production", policy =>
+    {
+        policy.WithOrigins(
+                "https://attech.space",
+                "https://www.attech.space"
+            )
+            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+            .WithHeaders(
+                "Content-Type",
+                "Authorization",
+                "X-CSRF-Token",
+                "X-Requested-With"
+            )
+            .AllowCredentials()
+            .SetPreflightMaxAge(TimeSpan.FromHours(1));
+    });
+
+    // Default policy based on environment
+    options.DefaultPolicyName = builder.Environment.IsDevelopment() ? "Development" : "Production";
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -197,13 +247,20 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Add security middleware (order is important!)
+app.UseSecurityHeaders();
+
 // Add request timing tracking
 app.UseRequestTiming();
 
 // Add global exception handling
 app.UseGlobalExceptionHandling();
 
-app.UseCors("AllowAllOrigins");
+// Apply environment-specific CORS policy
+app.UseCors();
+
+// Add XSS protection (before authentication)
+app.UseXssProtection();
 
 // Configure uploads directory (same as attachment service)
 var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "Uploads");
@@ -241,14 +298,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Only use HTTPS redirection in production
-if (app.Environment.IsProduction())
+if (!app.Environment.IsProduction())
 {
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
 }
+
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add CSRF protection (after authentication)
+app.UseCsrfProtection();
 
 app.UseMiddleware<RoleMiddleWare>();
 

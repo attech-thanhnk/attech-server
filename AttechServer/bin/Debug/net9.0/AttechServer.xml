@@ -848,6 +848,16 @@
             Get document files by slug
             </summary>
         </member>
+        <member name="M:AttechServer.Controllers.ClientLanguageContentController.FindAll">
+            <summary>
+            Get all language contents with long cache for client
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.ClientLanguageContentController.FindById(System.Int32)">
+            <summary>
+            Get language content by ID with long cache for client
+            </summary>
+        </member>
         <member name="M:AttechServer.Controllers.ClientNewsCategoryController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Get all news categories for client with caching
@@ -1423,7 +1433,12 @@
         </member>
         <member name="M:AttechServer.Controllers.SettingController.GetAllSettings">
             <summary>
-            Lấy tất cả settings đã được định nghĩa
+            Lấy tất cả settings đã được định nghĩa (cần đăng nhập)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.SettingController.GetPublicSettings">
+            <summary>
+            Lấy tất cả settings public (không cần đăng nhập) - cho Frontend
             </summary>
         </member>
         <member name="M:AttechServer.Controllers.SettingController.GetMultipleSettings(System.Collections.Generic.List{System.String})">

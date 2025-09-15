@@ -2016,6 +2016,52 @@
     ]
   },
   {
+    "ContainingType": "AttechServer.Controllers.ClientLanguageContentController",
+    "Method": "FindById",
+    "RelativePath": "api/language-contents/client/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AttechServer.Shared.WebAPIBase.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AttechServer.Controllers.ClientLanguageContentController",
+    "Method": "FindAll",
+    "RelativePath": "api/language-contents/client/find-all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AttechServer.Shared.WebAPIBase.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "AttechServer.Controllers.LanguageContentController",
     "Method": "Create",
     "RelativePath": "api/language-contents/create",
@@ -6531,6 +6577,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AttechServer.Controllers.SettingController",
+    "Method": "GetPublicSettings",
+    "RelativePath": "api/Setting/public",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
