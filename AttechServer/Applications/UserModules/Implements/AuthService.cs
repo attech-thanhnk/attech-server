@@ -82,8 +82,9 @@ namespace AttechServer.Applications.UserModules.Implements
                         RoleName = user.RoleId switch
                         {
                             1 => "superadmin",
-                            2 => "admin", 
+                            2 => "admin",
                             3 => "editor",
+                            4 => "user",
                             _ => "unknown"
                         },
                         Status = user.Status == CommonStatus.ACTIVE ? "active" : "inactive",

@@ -727,31 +727,6 @@
             Delete all files associated with a service article
             </summary>
         </member>
-        <member name="M:AttechServer.Controllers.ApiEndpointController.FindAll">
-            <summary>
-            Get api endpoint list
-            </summary>
-        </member>
-        <member name="M:AttechServer.Controllers.ApiEndpointController.FindById(System.Int32)">
-            <summary>
-            Get API Endpoint by ID
-            </summary>
-        </member>
-        <member name="M:AttechServer.Controllers.ApiEndpointController.Create(CreateApiEndpointDto)">
-            <summary>
-            Create new API Endpoint
-            </summary>
-        </member>
-        <member name="M:AttechServer.Controllers.ApiEndpointController.Update(System.Int32,CreateApiEndpointDto)">
-            <summary>
-            Update API Endpoint
-            </summary>
-        </member>
-        <member name="M:AttechServer.Controllers.ApiEndpointController.Delete(System.Int32)">
-            <summary>
-            Delete API Endpoint
-            </summary>
-        </member>
         <member name="M:AttechServer.Controllers.AttachmentController.CleanupTempFiles">
             <summary>
             Cleanup temp files older than specified hours (background task endpoint)
@@ -1028,6 +1003,11 @@
             Get client IP address from request
             </summary>
         </member>
+        <member name="M:AttechServer.Controllers.CsrfController.GetCsrfToken">
+            <summary>
+            Get CSRF token for authenticated requests
+            </summary>
+        </member>
         <member name="M:AttechServer.Controllers.GlobalSearchController.GlobalSearch(System.String,System.Int32)">
             <summary>
             Global search across Products, News, Services, Notifications
@@ -1294,6 +1274,51 @@
             Delete notification
             </summary>
         </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
+            <summary>
+            Get all phone book entries with filtering and sorting (Admin only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.FindById(System.Int32)">
+            <summary>
+            Get phone book entry detail by ID (Admin only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.Create(AttechServer.Applications.UserModules.Dtos.PhoneBook.CreatePhoneBookDto)">
+            <summary>
+            Create new phone book entry (Admin only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.Update(System.Int32,AttechServer.Applications.UserModules.Dtos.PhoneBook.UpdatePhoneBookDto)">
+            <summary>
+            Update phone book entry (Admin only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.Delete(System.Int32)">
+            <summary>
+            Delete phone book entry (Admin only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.GetByDepartment(System.String)">
+            <summary>
+            Get phone book entries by department (Public API)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.GetActiveContacts">
+            <summary>
+            Get all active phone book entries (Public API)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.UpdateOrder(System.Int32,System.Int32)">
+            <summary>
+            Update phone book entry order (Admin only)
+            </summary>
+        </member>
+        <member name="M:AttechServer.Controllers.PhoneBookController.ToggleActive(System.Int32)">
+            <summary>
+            Toggle active status of phone book entry (Admin only)
+            </summary>
+        </member>
         <member name="M:AttechServer.Controllers.ProductCategoryController.FindAll(AttechServer.Shared.ApplicationBase.Common.PagingRequestBaseDto)">
             <summary>
             Get all product categories with caching (Admin only)
@@ -1522,6 +1547,61 @@
             <summary>
             Trạng thái
             <see cref="T:AttechServer.Shared.Consts.CommonStatus"/>
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.FullName">
+            <summary>
+            Họ tên
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Position">
+            <summary>
+            Chức danh
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Organization">
+            <summary>
+            Tổ chức
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Department">
+            <summary>
+            Phòng ban
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Phone">
+            <summary>
+            Điện thoại cố định
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Extension">
+            <summary>
+            Máy lẻ
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Email">
+            <summary>
+            Thư điện tử
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Mobile">
+            <summary>
+            Di động
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Notes">
+            <summary>
+            Ghi chú bổ sung
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.Order">
+            <summary>
+            Thứ tự hiển thị
+            </summary>
+        </member>
+        <member name="P:AttechServer.Domains.Entities.Main.PhoneBook.IsActive">
+            <summary>
+            Trạng thái hiển thị: true = hiển thị, false = ẩn
             </summary>
         </member>
         <member name="P:AttechServer.Domains.Entities.Main.Product.Status">
@@ -1773,6 +1853,30 @@
             <inheritdoc />
         </member>
         <member name="M:AttechServer.Migrations.AddTimePostedToInternalDocument.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddPhoneBookTable">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddPhoneBookTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddPhoneBookTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddPhoneBookTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AttechServer.Migrations.AddOrganizationFieldToPhoneBook">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddOrganizationFieldToPhoneBook.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddOrganizationFieldToPhoneBook.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:AttechServer.Migrations.AddOrganizationFieldToPhoneBook.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:AttechServer.Services.TempFileCleanupBackgroundService">

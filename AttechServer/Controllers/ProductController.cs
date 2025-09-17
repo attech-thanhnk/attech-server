@@ -110,7 +110,7 @@ namespace AttechServer.Controllers
         /// Create new product with all data in one request (FormData)
         /// </summary>
         [HttpPost("create")]
-        [RoleFilter(2)]
+        [RoleFilter(3)]
         public async Task<ApiResponse> Create([FromBody] CreateProductDto input)
         {
             try
@@ -164,7 +164,7 @@ namespace AttechServer.Controllers
         /// ID được truyền qua route parameter, FE không cần gửi ID trong body
         /// </summary>
         [HttpPut("update/{id}")]
-        [RoleFilter(2)]
+        [RoleFilter(3)]
         public async Task<ApiResponse> Update(int id, [FromBody] UpdateProductDto input)
         {
             try
@@ -187,7 +187,7 @@ namespace AttechServer.Controllers
         /// Delete product
         /// </summary>
         [HttpDelete("delete/{id}")]
-        [RoleFilter(2)]
+        [RoleFilter(3)]
         public async Task<ApiResponse> Delete(int id)
         {
             try

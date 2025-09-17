@@ -40,40 +40,20 @@ namespace AttechServer.Shared.Middlewares
                 
                 _logger.LogInformation($"RoleMiddleware: userId={userId}, userLevel={userLevel}, path={context.Request.Path}");
 
-                // Chỉ kiểm tra UserLevel thay vì Permission phức tạp
-                if (userLevel == 1 || userLevel == 2)
+                // Check if the endpoint has RoleFilter attribute
+                var roleFilterAttribute = endpoint?.Metadata?.GetMetadata<AttechServer.Shared.Filters.RoleFilterAttribute>();
+
+                if (roleFilterAttribute != null)
                 {
-                    _logger.LogInformation($"Access granted for userLevel={userLevel}");
+                    // If endpoint has RoleFilter, use its logic
+                    _logger.LogInformation($"Endpoint has RoleFilter, letting RoleFilter handle authorization");
                     await _next(context);
                     return;
                 }
 
-                // Các user có UserLevel thấp hơn chỉ được truy cập các endpoint cơ bản
-                var path = context.Request.Path.Value?.ToLower() ?? "";
-                
-                // Danh sách các endpoint được phép truy cập cho user level thấp
-                var allowedPaths = new[]
-                {
-                    "/api/auth/profile",
-                    "/api/auth/change-password",
-                    "/api/dashboard/stats",
-                    "/api/news/public",
-                    "/api/products/public",
-                    "/api/services/public"
-                };
-
-                var isAllowed = allowedPaths.Any(allowedPath => path.StartsWith(allowedPath));
-                
-                if (isAllowed)
-                {
-                    _logger.LogInformation($"Access granted to {path} for userLevel={userLevel}");
-                    await _next(context);
-                }
-                else
-                {
-                    _logger.LogWarning($"Access denied to {path} for userLevel={userLevel}");
-                    await ReturnUnauthorizedResponse(context);
-                }
+                // If no RoleFilter attribute, allow all authenticated users
+                _logger.LogInformation($"No RoleFilter found, allowing authenticated user with userLevel={userLevel}");
+                await _next(context);
             }
             catch (Exception ex)
             {

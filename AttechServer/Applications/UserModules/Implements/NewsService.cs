@@ -355,7 +355,7 @@ namespace AttechServer.Applications.UserModules.Implements
             _logger.LogInformation($"{nameof(FindAll)}: input = {JsonSerializer.Serialize(input)}");
 
             var baseQuery = _dbContext.News.AsNoTracking()
-                .Where(n => !n.Deleted && n.IsAlbum == false); // CHỈ lấy News thực, không lấy Albums
+                .Where(n => !n.Deleted && n.IsAlbum == false && n.IsDocument == false); // CHỈ lấy News thực, không lấy Albums
 
             // Filter by category ID
             if (input.CategoryId.HasValue)
@@ -445,7 +445,7 @@ namespace AttechServer.Applications.UserModules.Implements
 
             // Build query
             var baseQuery = _dbContext.News.AsNoTracking()
-                .Where(n => !n.Deleted && n.IsAlbum == false && n.NewsCategoryId == categoryId); // CHỈ lấy News thực
+                .Where(n => !n.Deleted && n.IsAlbum == false && n.IsDocument == false && n.NewsCategoryId == categoryId); // CHỈ lấy News thực
 
             // Tìm kiếm
             if (!string.IsNullOrEmpty(input.Keyword))
@@ -577,7 +577,7 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             _logger.LogInformation($"{nameof(FindBySlug)}: slug = {slug}");
             var news = await _dbContext.News
-                .Where(n => (n.SlugVi == slug || n.SlugEn == slug) && !n.Deleted && n.IsAlbum == false) // CHỈ lấy News thực
+                .Where(n => (n.SlugVi == slug || n.SlugEn == slug) && !n.Deleted && n.IsAlbum == false && n.IsDocument ==false) // CHỈ lấy News thực
                 .Select(n => new DetailNewsDto
                 {
                     Id = n.Id,
@@ -1068,7 +1068,7 @@ namespace AttechServer.Applications.UserModules.Implements
             
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false && n.IsDocument == false);
+                .Where(n => !n.Deleted && n.Status == CommonStatus.ACTIVE && n.IsAlbum == false && n.IsDocument == false);
 
             // Search by keyword if provided
             if (!string.IsNullOrWhiteSpace(input.Keyword))
@@ -1418,7 +1418,7 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => n.Status == 1 && !n.Deleted)
+                .Where(n => n.Status == 1 && !n.Deleted && !n.IsDocument)
                 .OrderByDescending(n => n.TimePosted);
 
             var totalItems = await query.CountAsync();
@@ -1459,7 +1459,7 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             var news = await _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => n.Status == 1 && !n.Deleted)
+                .Where(n => n.Status == 1 && !n.Deleted && !n.IsDocument)
                 .Where(n => n.SlugVi == slug || n.SlugEn == slug)
                 .Select(n => new DetailNewsDto
                 {
@@ -1527,7 +1527,7 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => n.IsAlbum && n.Status == 1 && !n.Deleted)
+                .Where(n => n.IsAlbum && n.Status == 1 && !n.Deleted && !n.IsDocument)
                 .Where(n => n.NewsCategory.SlugVi == categorySlug || n.NewsCategory.SlugEn == categorySlug)
                 .OrderByDescending(n => n.TimePosted);
 
@@ -1569,7 +1569,7 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             var query = _dbContext.News
                 .Include(n => n.NewsCategory)
-                .Where(n => n.IsAlbum && n.Status == 1 && n.IsOutstanding && !n.Deleted)
+                .Where(n => n.IsAlbum && n.Status == 1 && n.IsOutstanding && !n.Deleted && !n.IsDocument)
                 .OrderByDescending(n => n.TimePosted);
 
             var totalItems = await query.CountAsync();
@@ -1616,7 +1616,7 @@ namespace AttechServer.Applications.UserModules.Implements
                 {
                     var album = await _dbContext.News
                         .Include(n => n.NewsCategory)
-                        .FirstOrDefaultAsync(n => n.Id == id && n.IsAlbum && !n.Deleted);
+                        .FirstOrDefaultAsync(n => n.Id == id && n.IsAlbum && !n.Deleted && !n.IsDocument);
 
                     if (album == null)
                         throw new UserFriendlyException(ErrorCode.NewsNotFound);

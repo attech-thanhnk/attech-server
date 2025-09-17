@@ -78,6 +78,7 @@ namespace AttechServer.Controllers
                     1 => "SuperAdmin",
                     2 => "Admin",
                     3 => "Editor",
+                    4 => "User",
                     _ => "Unknown"
                 };
                 

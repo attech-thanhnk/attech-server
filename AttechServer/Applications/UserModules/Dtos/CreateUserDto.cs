@@ -38,7 +38,7 @@ namespace AttechServer.Applications.UserModules.Dtos
         [MaxLength(20)]
         public string? Phone { get; set; }
         
-        [IntegerRange(AllowableValues = new int[] { 1, 2, 3 })]
+        [IntegerRange(AllowableValues = new int[] { 1, 2, 3, 4 })]
         public int RoleId { get; set; } = 3; // Default to Editor
         
         public int Status { get; set; } = 1; // Active by default

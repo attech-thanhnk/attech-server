@@ -23,6 +23,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 
 
+
 // Configure TinyMCE options
 builder.Services.Configure<TinyMceOptions>(
     builder.Configuration.GetSection(TinyMceOptions.SectionName));
@@ -179,7 +180,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IApiEndpointService, ApiEndpointService>();
+// builder.Services.AddScoped<IApiEndpointService, ApiEndpointService>(); // DISABLED - không sử dụng nữa
 
 builder.Services.AddScoped<IWysiwygFileProcessor, WysiwygFileProcessor>();
 builder.Services.AddScoped<INewsService, NewsService>();
@@ -200,14 +201,15 @@ builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ICacheInvalidationService, CacheInvalidationService>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
-builder.Services.AddScoped<ISystemMonitoringService, SystemMonitoringService>();
-builder.Services.AddScoped<IDashboardService, DashboardService>();
+// builder.Services.AddScoped<ISystemMonitoringService, SystemMonitoringService>(); // DISABLED - không sử dụng nữa
+// builder.Services.AddScoped<IDashboardService, DashboardService>(); // DISABLED - không sử dụng nữa
 builder.Services.AddHttpClient<ITranslationService, FreeTranslationService>();
 builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddScoped<ILanguageContentService, LanguageContentService>();
 builder.Services.AddScoped<ILanguageContentCategoryService, LanguageContentCategoryService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IInternalDocumentService, InternalDocumentService>();
+builder.Services.AddScoped<IPhoneBookService, PhoneBookService>();
 
 // Add filters
 builder.Services.AddScoped<AttechServer.Shared.Filters.AntiSpamFilter>();
@@ -217,7 +219,7 @@ builder.Services.AddSignalR();
 
 // Add background services
 builder.Services.AddHostedService<AttechServer.Services.TempFileCleanupBackgroundService>();
-builder.Services.AddHostedService<AttechServer.Services.SystemMonitoringBackgroundService>();
+// builder.Services.AddHostedService<AttechServer.Services.SystemMonitoringBackgroundService>(); // DISABLED - không sử dụng nữa
 
 // Configure response caching
 builder.Services.AddResponseCaching();
@@ -308,7 +310,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Add CSRF protection (after authentication)
-app.UseCsrfProtection();
+// app.UseCsrfProtection(); // Disabled for development
 
 app.UseMiddleware<RoleMiddleWare>();
 

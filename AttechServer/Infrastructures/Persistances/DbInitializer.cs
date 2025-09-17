@@ -21,10 +21,7 @@ namespace AttechServer.Infrastructures.Persistances
                 await SeedUsersAsync(context);
             }
 
-            if (!await context.ApiEndpoints.AnyAsync())
-            {
-                await SeedApiEndpointsAsync(context);
-            }
+            // REMOVED ApiEndpoints seed - không sử dụng nữa
         }
 
         private static async Task SeedRolesAsync(ApplicationDbContext context)
@@ -85,52 +82,6 @@ namespace AttechServer.Infrastructures.Persistances
             await context.SaveChangesAsync();
         }
 
-        private static async Task SeedApiEndpointsAsync(ApplicationDbContext context)
-        {
-            var apiEndpoints = new List<ApiEndpoint>
-            {
-                // Auth endpoints - không yêu cầu xác thực
-                new ApiEndpoint
-                {
-                    Path = "api/auth/login",
-                    HttpMethod = "POST",
-                    Description = "Đăng nhập hệ thống",
-                    RequireAuthentication = false
-                },
-                new ApiEndpoint
-                {
-                    Path = "api/auth/refresh-token",
-                    HttpMethod = "POST",
-                    Description = "Làm mới token",
-                    RequireAuthentication = false
-                },
-                
-                // Protected endpoints - yêu cầu xác thực
-                new ApiEndpoint
-                {
-                    Path = "api/auth/me",
-                    HttpMethod = "GET",
-                    Description = "Thông tin tài khoản hiện tại",
-                    RequireAuthentication = true
-                },
-                new ApiEndpoint
-                {
-                    Path = "api/auth/logout",
-                    HttpMethod = "POST",
-                    Description = "Đăng xuất",
-                    RequireAuthentication = true
-                },
-                new ApiEndpoint
-                {
-                    Path = "api/dashboard/stats",
-                    HttpMethod = "GET",
-                    Description = "Thống kê dashboard",
-                    RequireAuthentication = true
-                }
-            };
-
-            await context.ApiEndpoints.AddRangeAsync(apiEndpoints);
-            await context.SaveChangesAsync();
-        }
+        // REMOVED SeedApiEndpointsAsync method - không sử dụng nữa
     }
 }

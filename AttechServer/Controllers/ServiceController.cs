@@ -89,7 +89,7 @@ namespace AttechServer.Controllers
         /// Create new service with all data in one request
         /// </summary>
         [HttpPost("create")]
-        [RoleFilter(2)]
+        [RoleFilter(3)]
         public async Task<ApiResponse> Create([FromBody] CreateServiceDto input)
         {
             try
@@ -141,7 +141,7 @@ namespace AttechServer.Controllers
         /// ID được truyền qua route parameter, FE không cần gửi ID trong body
         /// </summary>
         [HttpPut("update/{id}")]
-        [RoleFilter(2)]
+        [RoleFilter(3)]
         public async Task<ApiResponse> Update(int id, [FromBody] UpdateServiceDto input)
         {
             try
@@ -163,7 +163,7 @@ namespace AttechServer.Controllers
         /// Delete service
         /// </summary>
         [HttpDelete("delete/{id}")]
-        [RoleFilter(2)]
+        [RoleFilter(3)]
         public async Task<ApiResponse> Delete(int id)
         {
             try

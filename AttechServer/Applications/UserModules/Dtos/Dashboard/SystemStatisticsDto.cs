@@ -18,7 +18,7 @@ namespace AttechServer.Applications.UserModules.Dtos.Dashboard
         public int Services { get; set; }
         public int Files { get; set; }
         public int ActivityLogs { get; set; }
-        public int SystemMonitorings { get; set; }
+        // public int SystemMonitorings { get; set; } // REMOVED
     }
 
     public class SystemMetricDto

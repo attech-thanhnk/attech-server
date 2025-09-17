@@ -8,7 +8,7 @@ using AttechServer.Shared.Consts;
 
 namespace AttechServer.Controllers
 {
-    [Route("api/api-endpoint")]
+    // [Route("api/api-endpoint")] // DISABLED - không sử dụng nữa
     [ApiController]
     [Authorize]
     public class ApiEndpointController : ApiControllerBase

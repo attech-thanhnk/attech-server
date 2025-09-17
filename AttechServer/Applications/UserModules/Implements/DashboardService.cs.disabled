@@ -202,8 +202,8 @@ namespace AttechServer.Applications.UserModules.Implements
                         Products = await _context.Products.CountAsync(p => !p.Deleted),
                         Services = await _context.Services.CountAsync(s => !s.Deleted),
                         Files = await _context.Attachments.CountAsync(),
-                        ActivityLogs = await _context.ActivityLogs.CountAsync(a => !a.Deleted),
-                        SystemMonitorings = await _context.SystemMonitorings.CountAsync(s => !s.Deleted)
+                        ActivityLogs = await _context.ActivityLogs.CountAsync(a => !a.Deleted)
+                        // SystemMonitorings = await _context.SystemMonitorings.CountAsync(s => !s.Deleted) // REMOVED
                     },
                     RecentMetrics = recentMetrics,
                     Health = new SystemHealthDto
@@ -261,16 +261,8 @@ namespace AttechServer.Applications.UserModules.Implements
         {
             try
             {
-                var activeAlerts = await _context.SystemMonitorings
-                    .Where(s => !s.Deleted && s.IsAlert && s.RecordedAt >= DateTime.Now.AddHours(-1))
-                    .Select(s => new AlertDto
-                    {
-                        Type = s.Category,
-                        Message = s.Description ?? s.MetricName,
-                        Severity = s.Value > (s.ThresholdValue ?? 0) * 1.5 ? "critical" : "warning",
-                        CreatedAt = s.RecordedAt
-                    })
-                    .ToListAsync();
+                // DISABLED - SystemMonitorings không còn sử dụng
+                var activeAlerts = new List<AlertDto>();
 
                 return new RealtimeDataDto
                 {

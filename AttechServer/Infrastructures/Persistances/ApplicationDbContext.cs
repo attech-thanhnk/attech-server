@@ -17,7 +17,7 @@ namespace AttechServer.Infrastructures.Persistances
         #region User
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<ApiEndpoint> ApiEndpoints { get; set; }
+        // public DbSet<ApiEndpoint> ApiEndpoints { get; set; } // REMOVED - không sử dụng nữa
         #endregion
 
         #region Main
@@ -31,11 +31,12 @@ namespace AttechServer.Infrastructures.Persistances
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
-        public DbSet<SystemMonitoring> SystemMonitorings { get; set; }
+        // public DbSet<SystemMonitoring> SystemMonitorings { get; set; } // REMOVED - không sử dụng nữa
         public DbSet<LanguageContent> LanguageContents { get; set; }
         public DbSet<LanguageContentCategory> LanguageContentCategories { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<InternalDocument> InternalDocuments { get; set; }
+        public DbSet<PhoneBook> PhoneBooks { get; set; }
         #endregion
 
 
@@ -163,14 +164,7 @@ namespace AttechServer.Infrastructures.Persistances
             });
 
 
-            modelBuilder.Entity<ApiEndpoint>(e =>
-            {
-                e.ToTable("ApiEndpoints");
-                e.HasKey(a => a.Id);
-                e.Property(a => a.Deleted).HasDefaultValue(false);
-                e.Property(a => a.RequireAuthentication).HasDefaultValue(true);
-
-            });
+            // REMOVED ApiEndpoint configuration - không sử dụng nữa
 
             #endregion
 
@@ -344,19 +338,7 @@ namespace AttechServer.Infrastructures.Persistances
                 entity.Property(e => e.Deleted).HasDefaultValue(false);
             });
 
-            modelBuilder.Entity<SystemMonitoring>(entity =>
-            {
-                entity.ToTable("SystemMonitorings");
-                entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.MetricName);
-                entity.HasIndex(e => e.Category);
-                entity.HasIndex(e => e.RecordedAt);
-                entity.Property(e => e.MetricName).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.Unit).HasMaxLength(20).IsRequired();
-                entity.Property(e => e.Category).HasMaxLength(50).IsRequired();
-                entity.Property(e => e.Description).HasMaxLength(200);
-                entity.Property(e => e.Deleted).HasDefaultValue(false);
-            });
+            // REMOVED SystemMonitoring configuration - không sử dụng nữa
 
             modelBuilder.Entity<LanguageContent>(entity =>
             {
@@ -420,6 +402,29 @@ namespace AttechServer.Infrastructures.Persistances
                     .WithMany()
                     .HasForeignKey(d => d.AttachmentId)
                     .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<PhoneBook>(entity =>
+            {
+                entity.ToTable("PhoneBooks");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Email);
+                entity.HasIndex(e => e.Organization);
+                entity.HasIndex(e => e.Department);
+                entity.HasIndex(e => e.Position);
+                entity.HasIndex(e => e.Order);
+                entity.HasIndex(e => new { e.Id, e.Deleted }).HasDatabaseName("IX_PhoneBook");
+                entity.Property(e => e.FullName).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.Position).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.Organization).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.Department).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.Phone).HasMaxLength(50);
+                entity.Property(e => e.Extension).HasMaxLength(20);
+                entity.Property(e => e.Email).HasMaxLength(255);
+                entity.Property(e => e.Mobile).HasMaxLength(50);
+                entity.Property(e => e.Notes).HasMaxLength(1000);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.Deleted).HasDefaultValue(false);
             });
             #endregion
 
