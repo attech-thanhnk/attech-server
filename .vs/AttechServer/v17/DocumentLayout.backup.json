@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|c:\\users\\thanh\\source\\repos\\backend\\attechserver\\attechserver\\controllers\\clientproductcategorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|solutionrelative:attechserver\\controllers\\clientproductcategorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|c:\\users\\thanh\\source\\repos\\backend\\attechserver\\attechserver\\applications\\usermodules\\implements\\newsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|solutionrelative:attechserver\\applications\\usermodules\\implements\\newsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|c:\\users\\thanh\\source\\repos\\backend\\attechserver\\attechserver\\controllers\\phonebookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|solutionrelative:attechserver\\controllers\\phonebookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|c:\\users\\thanh\\source\\repos\\backend\\attechserver\\attechserver\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|solutionrelative:attechserver\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{70243A99-3853-4425-951C-BAC4EBFA76EB}|AttechServer\\AttechServer.csproj|c:\\users\\thanh\\source\\repos\\backend\\attechserver\\attechserver\\shared\\middlewares\\rolemiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -98,7 +98,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
@@ -115,20 +115,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ClientAlbumController.cs",
-              "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\ClientAlbumController.cs",
-              "RelativeDocumentMoniker": "AttechServer\\Controllers\\ClientAlbumController.cs",
-              "ToolTip": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\ClientAlbumController.cs",
-              "RelativeToolTip": "AttechServer\\Controllers\\ClientAlbumController.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAQwCEAAABLAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "ClientProductCategoryController.cs",
+              "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\ClientProductCategoryController.cs",
+              "RelativeDocumentMoniker": "AttechServer\\Controllers\\ClientProductCategoryController.cs",
+              "ToolTip": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\ClientProductCategoryController.cs",
+              "RelativeToolTip": "AttechServer\\Controllers\\ClientProductCategoryController.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAB4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T13:48:36.319Z",
+              "WhenOpened": "2025-09-18T04:20:25.018Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "PhoneBookService.cs",
               "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Applications\\UserModules\\Implements\\PhoneBookService.cs",
               "RelativeDocumentMoniker": "AttechServer\\Applications\\UserModules\\Implements\\PhoneBookService.cs",
@@ -136,8 +136,7 @@
               "RelativeToolTip": "AttechServer\\Applications\\UserModules\\Implements\\PhoneBookService.cs",
               "ViewState": "AgIAAEsAAAAAAAAAAAAYwGQAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T11:16:40.954Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T11:16:40.954Z"
             },
             {
               "$type": "Document",
@@ -149,8 +148,7 @@
               "RelativeToolTip": "AttechServer\\Shared\\Middlewares\\RoleMiddleware.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T08:54:01.545Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T08:54:01.545Z"
             },
             {
               "$type": "Document",
@@ -162,21 +160,31 @@
               "RelativeToolTip": "AttechServer\\Controllers\\InternalDocumentController.cs",
               "ViewState": "AgIAAIsAAAAAAAAAAAAwwJoAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-11T09:51:43.798Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-11T09:51:43.798Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "ClientAlbumController.cs",
+              "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\ClientAlbumController.cs",
+              "RelativeDocumentMoniker": "AttechServer\\Controllers\\ClientAlbumController.cs",
+              "ToolTip": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\ClientAlbumController.cs",
+              "RelativeToolTip": "AttechServer\\Controllers\\ClientAlbumController.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwCEAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T13:48:36.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "NewsService.cs",
               "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Applications\\UserModules\\Implements\\NewsService.cs",
               "RelativeDocumentMoniker": "AttechServer\\Applications\\UserModules\\Implements\\NewsService.cs",
               "ToolTip": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Applications\\UserModules\\Implements\\NewsService.cs",
               "RelativeToolTip": "AttechServer\\Applications\\UserModules\\Implements\\NewsService.cs",
-              "ViewState": "AgIAALcHAAAAAAAAAAAWwN4HAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAMwHAAAAAAAAAAAWwNkHAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-16T12:01:30.935Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-16T12:01:30.935Z"
             },
             {
               "$type": "Document",
@@ -188,25 +196,11 @@
               "RelativeToolTip": "AttechServer\\Shared\\Middlewares\\GlobalExceptionMiddleware.cs",
               "ViewState": "AgIAADIAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T08:53:50.789Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T08:53:50.789Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Program.cs",
-              "RelativeDocumentMoniker": "AttechServer\\Program.cs",
-              "ToolTip": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Program.cs",
-              "RelativeToolTip": "AttechServer\\Program.cs",
-              "ViewState": "AgIAABUBAAAAAAAAAAAAACoBAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-15T07:44:43.015Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "PhoneBookController.cs",
               "DocumentMoniker": "C:\\Users\\thanh\\source\\repos\\Backend\\AttechServer\\AttechServer\\Controllers\\PhoneBookController.cs",
               "RelativeDocumentMoniker": "AttechServer\\Controllers\\PhoneBookController.cs",
@@ -214,8 +208,7 @@
               "RelativeToolTip": "AttechServer\\Controllers\\PhoneBookController.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAQwCEAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-16T09:25:59.492Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-16T09:25:59.492Z"
             },
             {
               "$type": "Document",
@@ -227,8 +220,7 @@
               "RelativeToolTip": "AttechServer\\Controllers\\HealthController.cs",
               "ViewState": "AgIAADUAAAAAAAAAAAA3wEcAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T06:44:43.463Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T06:44:43.463Z"
             },
             {
               "$type": "Document",
@@ -252,8 +244,7 @@
               "RelativeToolTip": "AttechServer\\Applications\\UserModules\\Dtos\\PhoneBook\\CreatePhoneBookDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T01:56:32.1Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T01:56:32.1Z"
             },
             {
               "$type": "Document",
@@ -337,8 +328,7 @@
               "RelativeToolTip": "AttechServer\\Applications\\UserModules\\Implements\\InternalDocumentService.cs",
               "ViewState": "AgIAAO4AAAAAAAAAAAAYwPcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-12T02:24:39.09Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-12T02:24:39.09Z"
             },
             {
               "$type": "Document",

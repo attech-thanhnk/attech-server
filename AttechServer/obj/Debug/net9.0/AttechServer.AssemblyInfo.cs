@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AttechServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3784efa9045ee28c6ae11556b22228ddd5521921")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df8743386b61418d4a4e38dd2402f61c2e76bd44")]
 [assembly: System.Reflection.AssemblyProductAttribute("AttechServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AttechServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
