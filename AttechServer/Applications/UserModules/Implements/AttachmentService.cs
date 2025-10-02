@@ -256,10 +256,32 @@ namespace AttechServer.Applications.UserModules.Implements
         public async Task<List<Attachment>> GetByEntityAsync(ObjectType objectType, int objectId)
         {
             return await _context.Attachments
+                .AsNoTracking()
                 .Where(a => a.ObjectType == objectType && a.ObjectId == objectId && !a.Deleted && !a.IsTemporary)
                 .OrderBy(a => a.IsPrimary ? 0 : 1)
                 .ThenBy(a => a.CreatedDate)
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Lấy primary attachments cho nhiều objectIds cùng lúc (tối ưu cho N+1 query)
+        /// </summary>
+        public async Task<Dictionary<int, Attachment?>> GetPrimaryAttachmentsByObjectIdsAsync(ObjectType objectType, List<int> objectIds)
+        {
+            var attachments = await _context.Attachments
+                .AsNoTracking()
+                .Where(a => a.ObjectType == objectType &&
+                           objectIds.Contains(a.ObjectId!.Value) &&
+                           a.IsPrimary &&
+                           !a.Deleted &&
+                           !a.IsTemporary)
+                .ToListAsync();
+
+            // Tạo dictionary với key là objectId
+            return objectIds.ToDictionary(
+                objectId => objectId,
+                objectId => attachments.FirstOrDefault(a => a.ObjectId == objectId)
+            );
         }
 
 

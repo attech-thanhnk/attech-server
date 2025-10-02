@@ -91,48 +91,63 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
-// Configure CORS with security-focused settings
-builder.Services.AddCors(options =>
+// Add response compression
+builder.Services.AddResponseCompression(options =>
 {
-    // Development CORS policy
-    options.AddPolicy("Development", policy =>
+    options.EnableForHttps = true;
+    options.MimeTypes = new[]
     {
-        policy.WithOrigins(
-                "http://localhost:3000",
-                "https://localhost:3000",
-                "http://192.168.22.159:3000",
-                "https://192.168.22.159:3000",
-                "http://192.168.22.159:7276",
-                "https://192.168.22.159:7276",
-                "http://192.168.22.159:5232"
-            )
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()
-            .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
-    });
-
-    // Production CORS policy - more restrictive
-    options.AddPolicy("Production", policy =>
-    {
-        policy.WithOrigins(
-                "https://attech.space",
-                "https://www.attech.space"
-            )
-            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-            .WithHeaders(
-                "Content-Type",
-                "Authorization",
-                "X-CSRF-Token",
-                "X-Requested-With"
-            )
-            .AllowCredentials()
-            .SetPreflightMaxAge(TimeSpan.FromHours(1));
-    });
-
-    // Default policy based on environment
-    options.DefaultPolicyName = builder.Environment.IsDevelopment() ? "Development" : "Production";
+        "application/json",
+        "application/javascript",
+        "text/plain",
+        "text/html",
+        "text/css",
+        "image/svg+xml"
+    };
 });
+
+// Configure CORS with security-focused settings
+// builder.Services.AddCors(options =>
+// {
+     // Development CORS policy
+//     options.AddPolicy("Development", policy =>
+//     {
+//         policy.WithOrigins(
+//                 "http://localhost:3000",
+//                 "https://localhost:3000",
+//                 "http://192.168.22.159:3000",
+//                 "https://192.168.22.159:3000",
+//                 "http://192.168.22.159:7276",
+//                 "https://192.168.22.159:7276",
+//                 "http://192.168.22.159:5232"
+//             )
+//             .AllowAnyMethod()
+//             .AllowAnyHeader()
+//             .AllowCredentials()
+//             .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+//     });
+
+//// Production CORS policy - more restrictive
+//options.AddPolicy("Production", policy =>
+//{
+//    policy.WithOrigins(
+//            "https://attech.space",
+//            "https://www.attech.space"
+//        )
+//        .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+//        .WithHeaders(
+//            "Content-Type",
+//            "Authorization",
+//            "X-CSRF-Token",
+//            "X-Requested-With"
+//        )
+//        .AllowCredentials()
+//        .SetPreflightMaxAge(TimeSpan.FromHours(1));
+//});
+
+// Default policy based on environment
+//options.DefaultPolicyName = builder.Environment.IsDevelopment() ? "Development" : "Production";
+// });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -252,6 +267,9 @@ using (var scope = app.Services.CreateScope())
 // Add security middleware (order is important!)
 app.UseSecurityHeaders();
 
+// Add response compression (early in pipeline)
+app.UseResponseCompression();
+
 // Add request timing tracking
 app.UseRequestTiming();
 
@@ -259,7 +277,7 @@ app.UseRequestTiming();
 app.UseGlobalExceptionHandling();
 
 // Apply environment-specific CORS policy
-app.UseCors();
+ //app.UseCors();
 
 // Add XSS protection (before authentication)
 app.UseXssProtection();
@@ -276,22 +294,20 @@ if (!Directory.Exists(uploadsPath))
 // app.UseStaticFiles();
 
 // Configure static files for uploads (GUID filenames make it secure)
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Uploads")),
-    RequestPath = "/uploads",
-    ServeUnknownFileTypes = true,
-    DefaultContentType = "application/octet-stream",
-    OnPrepareResponse = ctx =>
-    {
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Uploads")),
+//    RequestPath = "/uploads",
+//    ServeUnknownFileTypes = true,
+//    DefaultContentType = "application/octet-stream",
+//    OnPrepareResponse = ctx =>
+//    {
         // Add CORS headers
-        ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-        ctx.Context.Response.Headers.Add("Cache-Control", "public, max-age=3600");
-    }
-});
+//        ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+//        ctx.Context.Response.Headers.Add("Cache-Control", "public, max-age=3600");
+//    }
+//});
 
-// Add response caching middleware
-app.UseResponseCaching();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

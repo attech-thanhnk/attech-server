@@ -12,7 +12,8 @@ namespace AttechServer.Applications.UserModules.Abstracts
         Task<Attachment?> GetByIdAsync(int id);
         Task<bool> DeleteAsync(int id);
         Task<List<Attachment>> GetByEntityAsync(ObjectType objectType, int objectId);
-        
+        Task<Dictionary<int, Attachment?>> GetPrimaryAttachmentsByObjectIdsAsync(ObjectType objectType, List<int> objectIds);
+
         // Utility methods
         Task<bool> CleanupTempFilesAsync();
         Task<List<int>> ExtractAttachmentIdsFromContentAsync(string htmlContent);

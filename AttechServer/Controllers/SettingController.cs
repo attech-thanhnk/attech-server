@@ -7,6 +7,7 @@ using AttechServer.Shared.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace AttechServer.Controllers
 {
@@ -16,11 +17,13 @@ namespace AttechServer.Controllers
     public class SettingController : ApiControllerBase
     {
         private readonly IAttachmentService _attachmentService;
+        private readonly IMemoryCache _cache;
 
-        public SettingController(IAttachmentService attachmentService, ILogger<SettingController> logger)
+        public SettingController(IAttachmentService attachmentService, IMemoryCache cache, ILogger<SettingController> logger)
             : base(logger)
         {
             _attachmentService = attachmentService;
+            _cache = cache;
         }
 
         /// <summary>
@@ -29,7 +32,7 @@ namespace AttechServer.Controllers
         [HttpPost("{settingKey}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadSetting(
-            [FromRoute] string settingKey, 
+            [FromRoute] string settingKey,
             [FromForm] UploadSettingDto dto)
         {
             try
@@ -51,25 +54,29 @@ namespace AttechServer.Controllers
 
                 // Chuyển setting key thành objectId
                 var objectId = settingKey.ToObjectId();
-                
+
                 _logger.LogInformation($"Uploading {settingKey} file: {dto.File.FileName}, objectId: {objectId}");
-                
+
                 // Upload temp file
                 var tempAttachment = await _attachmentService.UploadTempAsync(dto.File, "image");
-                
+
                 // Associate với setting
                 await _attachmentService.AssociateAttachmentsAsync(
-                    new List<int> { tempAttachment.Id }, 
-                    ObjectType.Setting, 
+                    new List<int> { tempAttachment.Id },
+                    ObjectType.Setting,
                     objectId: objectId,
                     isFeaturedImage: true,
                     isContentImage: false
                 );
-                
+
+                // Xóa cache public settings khi có thay đổi
+                _cache.Remove("public_settings");
+                _logger.LogInformation("Public settings cache invalidated after upload");
+
                 _logger.LogInformation($"{settingKey} uploaded successfully: {tempAttachment.Url}");
-                
-                return Ok(new { 
-                    success = true, 
+
+                return Ok(new {
+                    success = true,
                     message = $"{settingKey} đã được cập nhật thành công",
                     settingKey = settingKey,
                     url = tempAttachment.Url,
@@ -182,6 +189,18 @@ namespace AttechServer.Controllers
         {
             try
             {
+                // Cache key cho public settings
+                var cacheKey = "public_settings";
+
+                // Kiểm tra cache trước
+                if (_cache.TryGetValue(cacheKey, out Dictionary<string, object?>? cachedSettings))
+                {
+                    _logger.LogInformation("Public settings loaded from cache");
+                    return Ok(cachedSettings);
+                }
+
+                _logger.LogInformation("Public settings cache miss - loading from database");
+
                 var settings = new Dictionary<string, object?>();
 
                 // Chỉ lấy những setting public cần thiết cho Frontend
@@ -213,13 +232,16 @@ namespace AttechServer.Controllers
                     SettingType.AboutCnhk7, SettingType.AboutCnhk8
                 };
 
+                // Tối ưu: Load tất cả attachments 1 lần thay vì N lần
+                var objectIds = publicSettingTypes.Select(s => (int)s).ToList();
+                var attachmentsDict = await _attachmentService.GetPrimaryAttachmentsByObjectIdsAsync(ObjectType.Setting, objectIds);
+
                 foreach (var settingType in publicSettingTypes)
                 {
                     var settingKey = settingType.ToString();
                     var objectId = (int)settingType;
 
-                    var attachments = await _attachmentService.GetByEntityAsync(ObjectType.Setting, objectId);
-                    var attachment = attachments.FirstOrDefault(a => a.IsPrimary);
+                    var attachment = attachmentsDict.GetValueOrDefault(objectId);
 
                     if (attachment != null)
                     {
@@ -234,6 +256,14 @@ namespace AttechServer.Controllers
                         settings[settingKey] = null;
                     }
                 }
+
+                // Cache kết quả 30 phút
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(30))
+                    .SetPriority(CacheItemPriority.High);
+
+                _cache.Set(cacheKey, settings, cacheOptions);
+                _logger.LogInformation("Public settings cached for 30 minutes");
 
                 return Ok(settings);
             }
@@ -300,9 +330,13 @@ namespace AttechServer.Controllers
 
                 var objectId = settingKey.ToObjectId();
                 await _attachmentService.SoftDeleteEntityAttachmentsAsync(ObjectType.Setting, objectId);
-                
-                return Ok(new { 
-                    success = true, 
+
+                // Xóa cache public settings khi có thay đổi
+                _cache.Remove("public_settings");
+                _logger.LogInformation("Public settings cache invalidated after delete");
+
+                return Ok(new {
+                    success = true,
                     message = $"{settingKey} đã được xóa",
                     settingKey = settingKey
                 });
