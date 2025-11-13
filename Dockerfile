@@ -3,6 +3,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 
+# Install ICU libraries for globalization support (fix culture errors)
+RUN apk add --no-cache icu-libs
+
 # Create non-root user for security
 RUN addgroup -g 1001 -S appgroup && \
     adduser -S -D -H -u 1001 -h /app -s /sbin/nologin -G appgroup appuser
@@ -63,6 +66,7 @@ USER appuser
 ENV ASPNETCORE_ENVIRONMENT=Production \
     ASPNETCORE_URLS=http://+:80 \
     DOTNET_RUNNING_IN_CONTAINER=true \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
     DOTNET_GCHeapCount=2 \
     DOTNET_GCConserveMemory=5 \
     DOTNET_GCRetainVM=0 \

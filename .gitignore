@@ -1,0 +1,36 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+.vs/
+
+# Docker
+docker-compose.override.yml
+.env.production
+*.log
+logs/
+
+# Uploads
+uploads/
+Uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.dll
+*.exe
+*.pdb
+
+# Generated configs
+nginx/proxy/conf.d/production.conf
+docker-compose.fullstack.production.yml
