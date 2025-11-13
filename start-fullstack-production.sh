@@ -65,6 +65,25 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
       - ConnectionStrings__Default=Data Source=sqlserver,1433;Initial Catalog=${DB_NAME:-AttechServerDb};User ID=sa;Password=${SA_PASSWORD};Trust Server Certificate=True;
+      # Domain configuration overrides (override appsettings.Production.json)
+      - AppSettings__BaseUrl=https://${FRONTEND_DOMAIN}
+      - AdminUrl=https://admin.${FRONTEND_DOMAIN}
+      # CORS configuration
+      - CorsOrigins__0=https://${FRONTEND_DOMAIN}
+      - CorsOrigins__1=https://${FRONTEND_DOMAIN_WWW}
+      - CorsOrigins__2=https://admin.${FRONTEND_DOMAIN}
+      # Email configuration (auto-generated from domain if not set in .env)
+      - Contact__AdminEmails=${ADMIN_EMAIL:-admin@${FRONTEND_DOMAIN}}
+      - Contact__ServiceDepartmentEmails=${SUPPORT_EMAIL:-support@${FRONTEND_DOMAIN}}
+      - Email__From=${NOREPLY_EMAIL:-noreply@${FRONTEND_DOMAIN}}
+      - Email__FromName=${SMTP_FROM_NAME:-${FRONTEND_DOMAIN}}
+      - Company__SupportEmail=${SUPPORT_EMAIL:-support@${FRONTEND_DOMAIN}}
+      # SMTP configuration
+      - Email__Smtp__Host=${SMTP_HOST:-smtp.gmail.com}
+      - Email__Smtp__Port=${SMTP_PORT:-587}
+      - Email__Smtp__EnableSsl=true
+      - Email__Smtp__Username=${SMTP_USERNAME}
+      - Email__Smtp__Password=${SMTP_PASSWORD}
     mem_limit: ${BACKEND_MEM_LIMIT:-1000}m
     mem_reservation: ${BACKEND_MEM_RESERVATION:-600}m
     volumes:
