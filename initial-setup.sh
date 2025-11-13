@@ -1,7 +1,9 @@
 #!/bin/bash
 
 ################################################################################
-# Attech Server - Fullstack Production Deployment
+# Initial Production Setup
+# Run this ONCE for first-time deployment or full stack restart
+# Daily deployments are handled by CI/CD (each service deploys independently)
 ################################################################################
 
 set -e
@@ -10,7 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env.production"
 
 echo "========================================"
-echo " ATTECH SERVER - PRODUCTION DEPLOYMENT"
+echo " INITIAL PRODUCTION SETUP"
 echo "========================================"
 echo ""
 
@@ -91,13 +93,6 @@ services:
       - ./logs:/app/Logs
 
   frontend:
-    build:
-      context: ${FRONTEND_SOURCE_DIR}
-      dockerfile: Dockerfile
-      args:
-        REACT_APP_API_PROTOCOL: https
-        REACT_APP_API_HOST: ${API_DOMAIN}
-        REACT_APP_API_PORT: ""
     mem_limit: ${FRONTEND_MEM_LIMIT:-150}m
     mem_reservation: ${FRONTEND_MEM_RESERVATION:-100}m
 
@@ -143,8 +138,9 @@ fi
 echo "  ✓ SSL certificates found"
 
 echo ""
-echo "[7/9] Building containers..."
-docker-compose -f docker-compose.fullstack.yml -f docker-compose.fullstack.production.yml build
+echo "[7/9] Pulling latest images..."
+docker pull ghcr.io/attech-thanhnk/attech-server:latest
+docker pull ghcr.io/attech-thanhnk/attech-client:latest
 
 echo ""
 echo "[8/9] Starting all services..."

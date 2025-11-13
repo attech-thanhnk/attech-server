@@ -25,7 +25,7 @@ services:
 
   # Backend API (.NET 9)
   backend:
-    build: .
+    image: ${BACKEND_IMAGE:-ghcr.io/attech-thanhnk/attech-server:latest}
     container_name: attechserver-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -58,14 +58,7 @@ services:
 
   # Frontend (React)
   frontend:
-    build:
-      context: C:/Users/Admin/ThanhNK/attech-client
-      dockerfile: Dockerfile
-      args:
-        REACT_APP_API_PROTOCOL: http
-        REACT_APP_API_HOST: localhost
-        REACT_APP_API_PORT: ""
-        REACT_APP_API_BASE_PATH: /api
+    image: ${FRONTEND_IMAGE:-ghcr.io/attech-thanhnk/attech-client:latest}
     container_name: attechserver-frontend
     depends_on:
       - backend

@@ -1,58 +1,63 @@
-# AttechServer - Docker Fullstack
+# AttechServer
 
-Backend .NET 9 + Frontend React + SQL Server 2022
+Backend .NET 9 + Frontend React + SQL Server 2022 với CI/CD tự động
 
 ---
 
 ## 🚀 Quick Start
 
-### Development (Windows)
+### Local Development
 ```bash
-docker-compose -f docker-compose.fullstack.yml up -d
+# Build từ source
+./start-local.sh
 ```
 → http://localhost/
 
-### Production (Ubuntu)
-```bash
-cp .env.production.example .env.production
-nano .env.production  # Sửa 3 dòng domain
-sudo ./start-fullstack-production.sh
-```
+### Production (VPS)
+Chi tiết xem [SETUP.md](SETUP.md)
 
 ---
 
-## 📁 Files Cần Thiết (5 files)
+## 🤖 CI/CD Workflow
+
+**Kiến trúc:**
+```
+Backend repo → Push → GitHub Actions → Build image → Deploy
+Frontend repo → Push → GitHub Actions → Build image → Deploy
+```
+
+**Mỗi khi push code:**
+- Backend: Tự động test + build + deploy
+- Frontend: Tự động build + deploy
+- Không cần chạy script thủ công
+
+---
+
+## 📁 Cấu Trúc
 
 ```
 AttechServer/
-├── docker-compose.fullstack.yml       # Config Docker
-├── .env.production.example            # Template config (copy → .env.production)
-├── start-fullstack-production.sh      # Deploy script (all-in-one)
+├── .github/workflows/deploy-backend.yml  # CI/CD
+├── docker-compose.fullstack.yml          # Production (dùng images)
+├── docker-compose.local.yml              # Local dev (build từ source)
+├── initial-setup.sh                      # Chỉ chạy 1 lần khi setup VPS
+├── start-local.sh                        # Local development
+├── .env.production.example               # Production config
+├── .env.local.example                    # Local config
 └── nginx/proxy/conf.d/
-    ├── local.conf                     # Development routing
-    └── production.conf.template       # Production template
+    ├── local.conf                        # Development routing
+    └── production.conf.template          # Production template
 ```
-
-**Note:**
-- `start-fullstack-production.sh` tự động generate: `production.conf` + `docker-compose.fullstack.production.yml`
-- Không cần commit 2 files generated này
 
 ---
 
-## 🎯 Deploy Lên Server Mới
+## 📦 Container Images
 
-**Chỉ cần sửa 3 dòng:**
-```bash
-FRONTEND_DOMAIN=yourdomain.com
-FRONTEND_DOMAIN_WWW=www.yourdomain.com
-API_DOMAIN=api.yourdomain.com
-```
+**Lưu trữ tại GitHub Container Registry:**
+- Backend: `ghcr.io/attech-thanhnk/attech-server:latest`
+- Frontend: `ghcr.io/attech-thanhnk/attech-client:latest`
 
-**Script tự động:**
-✅ Generate nginx config
-✅ Generate docker-compose config
-✅ Build containers
-✅ Deploy
+**Tự động build khi push code**
 
 ---
 
@@ -84,15 +89,26 @@ sudo certbot certonly --standalone \
 
 ## 🛠️ Commands
 
+### Production
 ```bash
-# Logs
-docker-compose -f docker-compose.fullstack.yml logs -f
+# Xem logs
+docker logs attechserver-api -f
+docker logs attechserver-frontend -f
 
-# Restart service
-docker-compose -f docker-compose.fullstack.yml restart backend
+# Restart service (CI/CD sẽ tự động, nhưng nếu cần manual)
+docker-compose -f docker-compose.fullstack.yml -f docker-compose.fullstack.production.yml restart backend
 
 # Stop all
-docker-compose -f docker-compose.fullstack.yml down
+docker-compose -f docker-compose.fullstack.yml -f docker-compose.fullstack.production.yml down
+```
+
+### Local
+```bash
+# Xem logs
+docker-compose -f docker-compose.fullstack.yml -f docker-compose.local.yml logs -f
+
+# Stop
+docker-compose -f docker-compose.fullstack.yml -f docker-compose.local.yml down
 ```
 
 ---
@@ -101,8 +117,8 @@ docker-compose -f docker-compose.fullstack.yml down
 
 ```
 Nginx Proxy (Port 80, 443)
-    ├── Frontend (React)
-    └── Backend (.NET 9) → SQL Server 2022
+    ├── Frontend (React container)
+    └── Backend (.NET 9 container) → SQL Server
 ```
 
 **Resources (3GB VPS):**
@@ -117,10 +133,16 @@ Nginx Proxy (Port 80, 443)
 
 | Issue | Solution |
 |-------|----------|
-| Backend culture error | ✅ Fixed (ICU + globalization) |
-| api.localhost fails (Windows) | Use `http://localhost/api/` |
-| Port 80 busy | `net stop http` or `sudo systemctl stop nginx` |
+| CI/CD failed | Kiểm tra GitHub Secrets (VPS_HOST, VPS_SSH_KEY, etc) |
+| Image pull failed | Kiểm tra image có tồn tại tại ghcr.io |
+| Port 80 busy | `sudo systemctl stop nginx` hoặc `net stop http` |
 
 ---
 
-✅ **Production Ready** | v1.0.0 | 2025-11-12
+## 📚 Documentation
+
+- **[SETUP.md](SETUP.md)** - Hướng dẫn setup VPS từ đầu (9 bước chi tiết)
+
+---
+
+✅ **Production Ready** | CI/CD Enabled | v2.0.0
