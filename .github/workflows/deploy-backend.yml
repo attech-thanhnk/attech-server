@@ -73,7 +73,7 @@ jobs:
           echo "Deploying Backend"
           echo "=========================================="
 
-          cd /home/ncpt/projects/attech-server
+          cd /home/ncpt/projects/attech-deployment
 
           # Pull latest image (already logged in via docker login)
           docker pull ghcr.io/attech-thanhnk/attech-server:latest
