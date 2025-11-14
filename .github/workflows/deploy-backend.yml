@@ -89,4 +89,4 @@ jobs:
 
     - name: Notify Success
       if: success()
-      run: echo "✅ Backend: https://api.attech.online"
+      run: echo "Backend deployed - https://api.attech.online"
