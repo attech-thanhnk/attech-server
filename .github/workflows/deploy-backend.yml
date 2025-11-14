@@ -9,6 +9,9 @@ jobs:
   # Job 1: Build, Test, and Push Image
   build-backend:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Checkout Backend Repository
