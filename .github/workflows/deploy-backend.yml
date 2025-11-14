@@ -59,10 +59,10 @@ jobs:
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USERNAME }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        port: ${{ secrets.VPS_PORT }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
         script: |
           set -e
 
@@ -70,12 +70,9 @@ jobs:
           echo "Deploying Backend"
           echo "=========================================="
 
-          cd /home/thanhdev/AttechServer
+          cd /home/ncpt/projects/attech-server
 
-          # Login to registry
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-          # Pull latest image
+          # Pull latest image (already logged in via docker login)
           docker pull ghcr.io/attech-thanhnk/attech-server:latest
 
           # Restart backend service
@@ -83,10 +80,10 @@ jobs:
 
           # Health check
           sleep 10
-          curl -f https://api.attech.space/health || exit 1
+          curl -f https://api.attech.online/health || exit 1
 
           echo "✅ Backend deployed successfully!"
 
     - name: Notify Success
       if: success()
-      run: echo "✅ Backend: https://api.attech.space"
+      run: echo "✅ Backend: https://api.attech.online"
