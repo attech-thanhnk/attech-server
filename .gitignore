@@ -12,6 +12,13 @@ docker-compose.override.yml
 *.log
 logs/
 
+# Deployment files (moved to attech-deployment repo)
+docker-compose.fullstack.yml
+docker-compose.fullstack.production.yml
+initial-setup.sh
+nginx/
+ssl/
+
 # Uploads
 uploads/
 Uploads/
@@ -30,7 +37,3 @@ Thumbs.db
 *.dll
 *.exe
 *.pdb
-
-# Generated configs
-nginx/proxy/conf.d/production.conf
-docker-compose.fullstack.production.yml
