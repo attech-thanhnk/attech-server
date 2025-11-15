@@ -212,6 +212,9 @@ namespace AttechServer.Controllers
                     // Logo
                     SettingType.Logo, SettingType.Favicon,
 
+                    // Home Page
+                    SettingType.HomeHeroBackground,
+
                     // Feature Backgrounds
                     SettingType.HomeFeatCns, SettingType.HomeFeatBhc, SettingType.HomeFeatCnhk,
 
@@ -229,7 +232,15 @@ namespace AttechServer.Controllers
                     // About CNHK Gallery
                     SettingType.AboutCnhk1, SettingType.AboutCnhk2, SettingType.AboutCnhk3,
                     SettingType.AboutCnhk4, SettingType.AboutCnhk5, SettingType.AboutCnhk6,
-                    SettingType.AboutCnhk7, SettingType.AboutCnhk8
+                    SettingType.AboutCnhk7, SettingType.AboutCnhk8,
+
+                    // Structure/Organization
+                    SettingType.StructureChart,
+
+                    // Leadership
+                    SettingType.LeaderChairman, SettingType.LeaderDirector,
+                    SettingType.LeaderViceDirector1, SettingType.LeaderViceDirector2,
+                    SettingType.LeaderViceDirector3
                 };
 
                 // Tối ưu: Load tất cả attachments 1 lần thay vì N lần

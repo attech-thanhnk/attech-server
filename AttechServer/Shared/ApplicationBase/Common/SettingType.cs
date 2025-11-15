@@ -47,6 +47,20 @@ namespace AttechServer.Shared.ApplicationBase.Common
         AboutCnhk7 = 4307,
         AboutCnhk8 = 4308,
 
+        // Home Page
+        HomeHeroBackground = 5001,
+
+        // Structure/Organization
+        StructureChart = 6001,
+
+        // Leadership
+        LeaderChairman = 7001,
+        LeaderDirector = 7002,
+        LeaderViceDirector1 = 7003,
+        LeaderViceDirector2 = 7004,
+        LeaderViceDirector3 = 7005,
+        LeaderViceDirector4 = 7006,
+
         // Future expansion
         Custom = 9999 // For dynamic setting keys
     }
@@ -116,6 +130,20 @@ namespace AttechServer.Shared.ApplicationBase.Common
                 SettingType.AboutCnhk6 => "Ảnh CNHK 6",
                 SettingType.AboutCnhk7 => "Ảnh CNHK 7",
                 SettingType.AboutCnhk8 => "Ảnh CNHK 8",
+
+                // Home Page
+                SettingType.HomeHeroBackground => "Ảnh nền hero section trang chủ",
+
+                // Structure/Organization
+                SettingType.StructureChart => "Sơ đồ cơ cấu tổ chức công ty",
+
+                // Leadership
+                SettingType.LeaderChairman => "Ảnh Chủ tịch Hội đồng quản trị",
+                SettingType.LeaderDirector => "Ảnh Giám đốc",
+                SettingType.LeaderViceDirector1 => "Ảnh Phó giám đốc 1",
+                SettingType.LeaderViceDirector2 => "Ảnh Phó giám đốc 2",
+                SettingType.LeaderViceDirector3 => "Ảnh Phó giám đốc 3",
+                SettingType.LeaderViceDirector4 => "Ảnh Phó giám đốc 4",
 
                 _ => settingType.ToString()
             };
